@@ -14,6 +14,10 @@ A simple Java program to turn on an off a old push button AC unit when the room 
 - Servo Motor
 - [Pi4J](http://pi4j.com/install.html) - Java I/O library for the Raspberry Pi
 
+### Credits
+
+(Eric Smith) [https://stackoverflow.com/questions/28486159/read-temperature-from-dht11-using-pi4j/34976602#34976602] - For writing most of the DHT11.java cod
+
 ### Troubleshooting
 
 > Unable to determine hardware version. I see: Hardware: BCM2835
