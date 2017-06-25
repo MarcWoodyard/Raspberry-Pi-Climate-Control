@@ -19,6 +19,9 @@ A simple Java program that turns on or off an old push button AC unit when the r
 clear && sudo javac -classpath .:/opt/pi4j/lib/'*' DHT11.java && sudo javac Controler.java && sudo javac Main.java && sudo java -classpath .:/opt/pi4j/lib/'*' Main
 ```
 
+##### Run at Startup (Optional)
+[RC.LOCAL](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md)
+
 ### Credits
 
 [Eric Smith](https://stackoverflow.com/questions/28486159/read-temperature-from-dht11-using-pi4j/34976602#34976602) - For writing most of the [DHT11.java](https://github.com/MarcWoodyard/Raspberry-Pi-Climate-Control/blob/master/src/DHT11.java) code.
