@@ -10,6 +10,8 @@ A simple Java program to turn on an off a old push button AC unit when the room 
 
 - Java
 - Raspberry Pi
+- DHT11 Temperature & Humidity Sensor
+- Servo Motor
 - [Pi4J](http://pi4j.com/install.html) - Java I/O library for the Raspberry Pi
 
 ### Troubleshooting
