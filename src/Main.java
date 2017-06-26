@@ -7,7 +7,7 @@ public class Main {
 		final double MAX_TEMP = 84.0;
 		final double MIN_TEMP = 76.0;
 		final long MAX_AC_RUNTIME = 959999999999L; //16 minutes.
-		Controler a = new Controler(MAX_TEMP, MIN_TEMP);
+		Controller a = new Controller(MAX_TEMP, MIN_TEMP);
 		DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a yyyy/MM/dd");
 
 		long elapsedTime = 0;
