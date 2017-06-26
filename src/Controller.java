@@ -11,6 +11,8 @@ public class ControllerController {
 	private double curHumidity;
 	private double maxTemperature;
 	private double minTemperature;
+	private int tooHot = 0;
+	private int tooCold = 0;
 	private DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a yyyy/MM/dd");
 
 	/**
@@ -70,14 +72,26 @@ public class ControllerController {
 	public void tempCheck() {
 		//Room temperature is too hot.
 		if(this.curTemp >= this.maxTemperature + 2.0) {
-			System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Temperature too hot. Correcting...");
-			this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
+			this.tooHot++;
+
+			if(this.tooHot == 2) {
+				System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Temperature too hot. Correcting...");
+				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
+				this.tooHot = 0;
+			}
+
 		}
 
-		//Room temperature is to cold.
+		//Room temperature is too cold.
 		if(this.curTemp <= this.minTemperature - 2.0) {
-			System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Room temperature too cold. Correcting...");
-			this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
+			this.tooCold++;
+
+			if(this.tooCold == 2) {
+				System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Room temperature too cold. Correcting...");
+				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
+				this.tooCold = 0;
+			}
+
 		}
 	}
 
