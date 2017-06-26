@@ -2,7 +2,7 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-public class ControllerController {
+public class Controller {
 
 	private boolean servoStatus = false;
 	private Runtime runTime = Runtime.getRuntime();
