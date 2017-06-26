@@ -16,7 +16,6 @@ public class Main {
 		do {
 			a.temperatureUpdate();
 			System.out.println("[INFO] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
-
 			a.tempCheck();
 
 			if (a.getTemperature() > MAX_TEMP) {
