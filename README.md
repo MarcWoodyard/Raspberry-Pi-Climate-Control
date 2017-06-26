@@ -16,7 +16,7 @@ A simple Java program that turns on or off an old push button AC unit when the r
 
 ##### Compile & Run
 ```sh 
-clear && sudo javac -classpath .:/opt/pi4j/lib/'*' DHT11.java && sudo javac Controler.java && sudo javac Main.java && sudo java -classpath .:/opt/pi4j/lib/'*' Main
+clear && sudo javac -classpath .:/opt/pi4j/lib/'*' DHT11.java && sudo javac Controller.java && sudo javac Main.java && sudo java -classpath .:/opt/pi4j/lib/'*' Main
 ```
 
 ##### Run at Startup (Optional)
