@@ -17,6 +17,8 @@ public class Main {
 			a.temperatureUpdate();
 			System.out.println("[INFO] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
 
+			a.tempCheck();
+
 			if (a.getTemperature() > MAX_TEMP) {
 
 				long timerStart = System.nanoTime(); //When did the AC turn on?
