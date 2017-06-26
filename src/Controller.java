@@ -1,5 +1,4 @@
 import java.util.Date;
-import java.util.ArrayList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -12,7 +11,6 @@ public class ControllerController {
 	private double curHumidity;
 	private double maxTemperature;
 	private double minTemperature;
-	private ArrayList<Double> tempHistory = new ArrayList<>();
 	private DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a yyyy/MM/dd");
 
 	/**
@@ -70,34 +68,16 @@ public class ControllerController {
 	* @return None
 	*/
 	public void tempCheck() {
-		//Room temperature is not getting cooler when AC is on.
-		if(this.servoStatus == true || this.curTemp > this.maxTemperature) {
-			tempHistory.add(this.curTemp);
-
-			if(tempHistory.size() == 3) {
-
-				if(tempHistory.get(1) >= tempHistory.get(0) && tempHistory.get(2) >= tempHistory.get(1) && this.curTemp >= this.maxTemperature) {
-					System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Temperature not changing. Correcting...");
-
-					this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
-
-					this.tempHistory.clear();
-				}
-
-				else if(this.tempHistory.get(0) < this.maxTemperature && this.tempHistory.get(2) < this.tempHistory.get(0)) {
-					this.tempHistory.clear();
-				}
-			}
+		//Room temperature is too hot.
+		if(this.curTemp >= this.maxTemperature + 2.0) {
+			System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Temperature too hot. Correcting...");
+			this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
 		}
 
-		//Room colder than min temperature.
-		if(this.curTemp < this.minTemperature - 4) {
-			System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Temperature below target. Correcting...");
-
+		//Room temperature is to cold.
+		if(this.curTemp <= this.minTemperature - 2.0) {
+			System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Room temperature too cold. Correcting...");
 			this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
-
-			if(this.servoStatus == true)
-				this.servoStatus = false;
 		}
 	}
 
