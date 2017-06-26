@@ -22,7 +22,7 @@ public class ControllerController {
 	* @return None
 	*/
 	public Controller(double maxTemp, double minTemp) {
-		System.out.println("Running V 6.25.17---5:10pm");
+		System.out.println("Running V 6.25.17---11:48pm");
 
 		try {
 			System.out.println("[INFO] [" + this.dateFormat.format(new Date()) + "] Starting Controller module.");
