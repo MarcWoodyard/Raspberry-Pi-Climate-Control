@@ -16,7 +16,7 @@ public class Main {
 		do {
 			a.temperatureUpdate();
 			System.out.println("[INFO] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
-			a.tempCheck();
+			a.tempWatch();
 
 			if (a.getTemperature() > MAX_TEMP) {
 
@@ -30,7 +30,7 @@ public class Main {
 					a.sleep(2);
 
 					a.temperatureUpdate();
-					a.tempCheck();
+					a.tempWatch();
 
 					//Room not getting hotter, but not getting that much cooler.
 					elapsedTime = System.nanoTime() - timerStart;

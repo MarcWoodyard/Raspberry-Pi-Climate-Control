@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.ArrayList;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -12,7 +13,7 @@ public class Controller {
 	private double maxTemperature;
 	private double minTemperature;
 	private int tooHot = 0;
-	private int tooCold = 0;
+	private ArrayList<Double> temps = new ArrayList<>();
 	private DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a yyyy/MM/dd");
 
 	/**
@@ -69,8 +70,8 @@ public class Controller {
 	* @param None
 	* @return None
 	*/
-	public void tempCheck() {
-		//Room temperature is too hot.
+	public void tempWatch() {
+		//Room temperature is too hot. Servo didn't hit AC button correctly. 
 		if(this.curTemp >= this.maxTemperature + 2.0) {
 			this.tooHot++;
 
@@ -79,19 +80,19 @@ public class Controller {
 				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
 				this.tooHot = 0;
 			}
-
 		}
 
-		//Room temperature is too cold.
-		if(this.curTemp <= this.minTemperature - 2.0) {
-			this.tooCold++;
+		//Room temperature is too cold. Servo didn't hit AC button correctly. 
+		else if(this.curTemp <= this.minTemperature - 2.0) {
+			this.temps.add(this.curTemp);
 
-			if(this.tooCold == 2) {
+			if(a.size() == 2 && a.get(0) > a.get(1)) {
 				System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Room temperature too cold. Correcting...");
 				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
-				this.tooCold = 0;
+				this.temps.clear();
 			}
-
+			else if(a.size() > 2) 
+				this.temps.clear();
 		}
 	}
 
