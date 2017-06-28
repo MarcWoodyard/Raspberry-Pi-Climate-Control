@@ -83,7 +83,7 @@ public class Controller {
 		}
 
 		//Room temperature is too cold. Servo didn't hit AC button correctly. 
-		else if(this.curTemp <= this.minTemperature - 2.0) {
+		else if(this.curTemp <= this.minTemperature - 1.0) {
 			this.coldTemps.add(this.curTemp);
 
 			if(this.coldTemps.size() == 3 && this.coldTemps.get(0) > this.coldTemps.get(1) && this.coldTemps.get(1) > this.coldTemps.get(2)) {
