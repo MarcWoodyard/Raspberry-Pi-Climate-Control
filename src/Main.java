@@ -15,8 +15,6 @@ public class Main {
 
 		do {
 			a.temperatureUpdate();
-			System.out.println("[INFO] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
-			a.tempWatch();
 
 			if (a.getTemperature() > MAX_TEMP) {
 
@@ -27,7 +25,7 @@ public class Main {
 				do {
 					System.out.println("[AC ON] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
 
-					a.sleep(2);
+					a.sleep(1);
 
 					a.temperatureUpdate();
 					a.tempWatch();
@@ -47,6 +45,9 @@ public class Main {
 				elapsedTime = 0;
 				totalTime = 0;
 			}
+
+			System.out.println("[INFO] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
+			a.tempWatch();
 
 			a.sleep(1);
 

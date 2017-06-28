@@ -23,7 +23,7 @@ public class Controller {
 	* @return None
 	*/
 	public Controller(double maxTemp, double minTemp) {
-		System.out.println("Running V 6.27.17---7:23pm");
+		System.out.println("Running V 6.28.17---2:42pm");
 
 		try {
 			System.out.println("[INFO] [" + this.dateFormat.format(new Date()) + "] Starting Controller module.");
@@ -91,7 +91,7 @@ public class Controller {
 				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
 				this.coldTemps.clear();
 			}
-			else if(a.size() > 3) 
+			else if(this.coldTemps.size() > 3) 
 				this.coldTemps.clear();
 		}
 	}
