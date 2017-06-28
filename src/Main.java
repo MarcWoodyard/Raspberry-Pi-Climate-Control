@@ -19,7 +19,7 @@ public class Main {
 			if (a.getTemperature() > MAX_TEMP) {
 
 				long timerStart = System.nanoTime(); //When did the AC turn on?
-				System.out.println("[AC ON] [" + dateFormat.format(new Date()) + "] Turning AC on. Temperature: " + a.getTemperature);
+				System.out.println("[AC ON] [" + dateFormat.format(new Date()) + "] Turning AC on. Temperature: " + a.getTemperature());
 				a.switchAC(); //Turn AC on.
 
 				do {
