@@ -86,12 +86,12 @@ public class Controller {
 		else if(this.curTemp <= this.minTemperature - 2.0) {
 			this.temps.add(this.curTemp);
 
-			if(a.size() == 2 && a.get(0) > a.get(1)) {
+			if(a.size() == 3 && a.get(0) > a.get(1) && a.get(1) > a.get(2)) {
 				System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Room temperature too cold. Correcting...");
 				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
 				this.temps.clear();
 			}
-			else if(a.size() > 2) 
+			else if(a.size() > 3) 
 				this.temps.clear();
 		}
 	}
