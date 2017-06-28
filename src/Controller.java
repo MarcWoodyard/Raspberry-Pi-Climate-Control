@@ -72,7 +72,7 @@ public class Controller {
 	*/
 	public void tempWatch() {
 		//Room temperature is too hot. Servo didn't hit AC button correctly. 
-		if(this.curTemp >= this.maxTemperature + 2.0) {
+		if(this.curTemp >= this.maxTemperature) {
 			this.tooHot++;
 
 			if(this.tooHot == 2) {
