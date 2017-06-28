@@ -91,7 +91,7 @@ public class Controller {
 				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
 				this.coldTemps.clear();
 			}
-			else if(a.size() > 3) 
+			else if(this.coldTemps.size() > 3) 
 				this.coldTemps.clear();
 		}
 	}
