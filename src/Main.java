@@ -23,11 +23,10 @@ public class Main {
 				a.switchAC(); //Turn AC on.
 
 				do {
-					System.out.println("[AC ON] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
-
 					a.sleep(1);
-
+					
 					a.temperatureUpdate();
+					System.out.println("[AC ON] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
 					a.tempWatch();
 
 					//Room not getting hotter, but not getting that much cooler.
