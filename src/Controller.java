@@ -13,7 +13,7 @@ public class Controller {
 	private double maxTemperature;
 	private double minTemperature;
 	private int tooHot = 0;
-	private ArrayList<Double> temps = new ArrayList<>();
+	private ArrayList<Double> coldTemps = new ArrayList<>();
 	private DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a yyyy/MM/dd");
 
 	/**
@@ -23,7 +23,7 @@ public class Controller {
 	* @return None
 	*/
 	public Controller(double maxTemp, double minTemp) {
-		System.out.println("Running V 6.26.17---8:37am");
+		System.out.println("Running V 6.27.17---7:23pm");
 
 		try {
 			System.out.println("[INFO] [" + this.dateFormat.format(new Date()) + "] Starting Controller module.");
@@ -84,15 +84,15 @@ public class Controller {
 
 		//Room temperature is too cold. Servo didn't hit AC button correctly. 
 		else if(this.curTemp <= this.minTemperature - 2.0) {
-			this.temps.add(this.curTemp);
+			this.coldTemps.add(this.curTemp);
 
-			if(a.size() == 3 && a.get(0) > a.get(1) && a.get(1) > a.get(2)) {
+			if(this.coldTemps.size() == 3 && this.coldTemps.get(0) > this.coldTemps.get(1) && this.coldTemps.get(1) > this.coldTemps.get(2)) {
 				System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Room temperature too cold. Correcting...");
 				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
-				this.temps.clear();
+				this.coldTemps.clear();
 			}
 			else if(a.size() > 3) 
-				this.temps.clear();
+				this.coldTemps.clear();
 		}
 	}
 
@@ -145,6 +145,7 @@ public class Controller {
 			Thread.sleep(minutes * 60 * 1000); //Minutes to sleep * seconds to a minute * miliseconds to a second.
 		} catch(Exception e) {
 			System.out.println("[ERROR] [" + dateFormat.format(new Date()) + "] Exception occured: " + e.getMessage());
+			System.out.println("minutes: " + minutes);
 		}
 	}
 
@@ -162,7 +163,7 @@ public class Controller {
 			this.runTime.exec(move2); //Center Servo
 		} catch(Exception e) {
 			System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Exception occured: " + e.getMessage());
+			System.out.println("move1: " + move1 + "\nsleep: " + sleep + "\nmove2: " + move2);
 		}
 	}
-
 }
