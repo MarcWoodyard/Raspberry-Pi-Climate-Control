@@ -24,7 +24,7 @@ public class Main {
 
 				do {
 					a.sleep(1);
-					
+
 					a.temperatureUpdate();
 					System.out.println("[AC ON] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
 					a.tempWatch();

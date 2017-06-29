@@ -23,7 +23,7 @@ public class Controller {
 	* @return None
 	*/
 	public Controller(double maxTemp, double minTemp) {
-		System.out.println("Running V 6.28.17---2:42pm");
+		System.out.println("Running V 6.28.17---8:52pm");
 
 		try {
 			System.out.println("[INFO] [" + this.dateFormat.format(new Date()) + "] Starting Controller module.");
@@ -71,27 +71,29 @@ public class Controller {
 	* @return None
 	*/
 	public void tempWatch() {
-		//Room temperature is too hot. Servo didn't hit AC button correctly. 
-		if(this.curTemp >= this.maxTemperature) {
+		//Room temperature is too hot. Servo didn't hit AC button correctly.
+		if(this.curTemp >= this.maxTemperature + 1.0) {
 			this.tooHot++;
 
 			if(this.tooHot == 2) {
 				System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Temperature too hot. Correcting...");
 				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
+				//Send a notification.
 				this.tooHot = 0;
 			}
 		}
 
-		//Room temperature is too cold. Servo didn't hit AC button correctly. 
+		//Room temperature is too cold. Servo didn't hit AC button correctly.
 		else if(this.curTemp <= this.minTemperature - 1.0) {
 			this.coldTemps.add(this.curTemp);
 
 			if(this.coldTemps.size() == 3 && this.coldTemps.get(0) > this.coldTemps.get(1) && this.coldTemps.get(1) > this.coldTemps.get(2)) {
 				System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Room temperature too cold. Correcting...");
 				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
+				//Send a notification.
 				this.coldTemps.clear();
 			}
-			else if(this.coldTemps.size() > 3) 
+			else if(this.coldTemps.size() > 3)
 				this.coldTemps.clear();
 		}
 	}
