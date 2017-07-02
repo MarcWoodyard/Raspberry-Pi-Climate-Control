@@ -143,14 +143,14 @@ public class CommunicationModule {
 
 	/**
 	 * Utility method to send simple HTML email
-	 * @param session
-	 * @param toEmail
-	 * @param subject
-	 * @param body
+	 * @param - Session - A session object.
+	 * @param - String - Email address where you want to send email.
+	 * @param - String - Subject line of email.
+	 * @param - String - Body of email.
+	 * @return - None
 	 */
 	private void emailWorker(Session session, String toEmail, String subject, String body){
-		try
-	    {
+		try {
 	      MimeMessage msg = new MimeMessage(session);
 	      //Message Headers
 	      msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
@@ -171,14 +171,29 @@ public class CommunicationModule {
 	    }
 	}
 
+	/**
+	 * In Development - Send SMS notifications.
+	 * @param - None
+	 * @return - None 
+	 */
 	public void sendSMS() {
 		//https://www.twilio.com/blog/2016/04/sending-sms-with-java.html
 	}
 
+	/**
+	 * Returns the email address that will be receiving email notifications.
+	 * @param - None
+	 * @return - String - Email address receiving notifications. 
+	 */
 	public String getToEmail() {
 		return this.toEmail;
 	}
 
+	/**
+	 * Returns the email address that will be sending email notifications.
+	 * @param - None
+	 * @return - String - Email address sending notifications. 
+	 */
 	public String getFromEmail() {
 		return this.fromEmail;
 	}
