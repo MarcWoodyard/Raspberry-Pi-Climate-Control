@@ -21,6 +21,7 @@ sudo javac -classpath .:./lib/pi4j/lib/'*':./lib/javamail/'*':./lib/javamail/lib
 sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' Controller.java
 sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' CommunicationModule.java
 sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' Main.java
+
 sudo java -classpath .:./lib/pi4j/lib/'*':./lib/javamail/lib/'*':./lib/javamail/lib/'*' Main
 ```
 
