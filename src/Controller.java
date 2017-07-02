@@ -1,52 +1,65 @@
-import java.util.Date;
-import java.util.ArrayList;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 public class Controller {
 
+	//Servo Motor
 	private boolean servoStatus = false;
 	private Runtime runTime = Runtime.getRuntime();
+
+	//Temperature Sensor
 	private DHT11 tempSensor = new DHT11();
 	private double curTemp;
 	private double curHumidity;
 	private double maxTemperature;
 	private double minTemperature;
 	private int tooHot = 0;
-	private ArrayList<Double> coldTemps = new ArrayList<>();
-	private DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a yyyy/MM/dd");
+
+	//Communication
+	private CommunicationModule coms;
+	private int coldEmail = 0;
+
+	//Logging
+	private Logger log;
 
 	/**
 	* Creates a Controller object.
-	* @param double - Max Temperature.
-	* @param double - Min Temperature.
-	* @return None
+	* @param - double - Max Temperature.
+	* @param - double - Min Temperature.
+	* @return - None
 	*/
 	public Controller(double maxTemp, double minTemp) {
-		System.out.println("Running V 6.28.17---8:52pm");
+
+		//Setup Temperature Sensor
+		this.maxTemperature = maxTemp;
+		this.minTemperature = minTemp;
+
+		//Set up Communications
+		this.coms = new CommunicationModule();
+
+		//Set up Logger
+		this.log = new Logger();
+
+		//Setup Servo Motor
+		System.out.println("[Launcher] Calibrating servo motor.");
 
 		try {
-			System.out.println("[INFO] [" + this.dateFormat.format(new Date()) + "] Starting Controller module.");
+			this.log("[INFO] Starting Controller module.");
 			this.runTime.exec("gpio mode 1 pwm");
 			this.runTime.exec("gpio pwm-ms");
 			this.runTime.exec("gpio pwmc 192");
 			this.runTime.exec("gpio pwmr 2000");
 			this.runTime.exec("gpio pwm 1 130");
 		} catch(Exception e) {
-			System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Exception occured: " + e.getMessage());
+			this.log("[ERROR] Exception occured: " + e.getMessage());
+			this.coms.sendEmail("AC Controller - Error Detected", "The AC controller encountered a  servo motor error.", this.coms.getToEmail());
 		}
-
-		this.maxTemperature = maxTemp;
-		this.minTemperature = minTemp;
 	}
 
 	/**
 	* Turn's AC on/off.
-	* @param None
-	* @return None
+	* @param - None
+	* @return - None
 	*/
 	public void switchAC() {
-		this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
+		this.moveServo("gpio pwm 1 46", 500, "gpio pwm 1 130");
 
 		if (this.servoStatus == true)
 			this.servoStatus = false;
@@ -56,8 +69,8 @@ public class Controller {
 
 	/**
 	* Updates room temperature and humidity values.
-	* @param None
-	* @return None
+	* @param - None
+	* @return - None
 	*/
 	public void temperatureUpdate() {
 		this.tempSensor.updateTemperature(7);
@@ -67,8 +80,8 @@ public class Controller {
 
 	/**
 	* Ensures room doesn't get too hot or cold.
-	* @param None
-	* @return None
+	* @param - None
+	* @return - None
 	*/
 	public void tempWatch() {
 		//Room temperature is too hot. Servo didn't hit AC button correctly.
@@ -76,32 +89,32 @@ public class Controller {
 			this.tooHot++;
 
 			if(this.tooHot == 2) {
-				System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Temperature too hot. Correcting...");
-				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
-				//Send a notification.
+				this.log("[ERROR] Temperature too hot. Correcting...");
+				this.moveServo("gpio pwm 1 46", 500, "gpio pwm 1 130");
+				this.coms.sendEmail("Temperature Above Max Value!", "The temperature in your room has exceded the limit you set.", this.coms.getToEmail());
+				this.log("[NOTIF] Notification Sent.");
 				this.tooHot = 0;
 			}
 		}
 
-		//Room temperature is too cold. Servo didn't hit AC button correctly.
 		else if(this.curTemp <= this.minTemperature - 1.0) {
-			this.coldTemps.add(this.curTemp);
-
-			if(this.coldTemps.size() == 3 && this.coldTemps.get(0) > this.coldTemps.get(1) && this.coldTemps.get(1) > this.coldTemps.get(2)) {
-				System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Room temperature too cold. Correcting...");
-				this.moveServo("gpio pwm 1 47", 500, "gpio pwm 1 130");
-				//Send a notification.
-				this.coldTemps.clear();
+			if(this.coldEmail == 0) {
+				this.coms.sendEmail("Temperature Below Min Value!", "The temperature in your room is below the limit you set", this.coms.getToEmail());
+				this.log("[NOTIF] Notification Sent.");
+				this.coldEmail++;
 			}
-			else if(this.coldTemps.size() > 3)
-				this.coldTemps.clear();
+			else if(this.coldEmail == 10)
+				this.coldEmail = 0;
+
+				this.coldEmail++;
 		}
+
 	}
 
 	/**
 	* Returns current servo status.
-	* @param None
-	* @return boolean - Return current servo status.
+	* @param - None
+	* @return - boolean - Return current servo status.
 	*/
 	public boolean getServoStatus() {
 		return this.servoStatus;
@@ -109,8 +122,8 @@ public class Controller {
 
 	/**
 	* Returns current room temperature.
-	* @param None
-	* @return double - Current room temperature.
+	* @param - None
+	* @return - double - Current room temperature.
 	*/
 	public double getTemperature() {
 		return this.curTemp;
@@ -118,45 +131,55 @@ public class Controller {
 
 	/**
 	* Returns current room humidity.
-	* @param None
-	* @return double - Current room humidity.
+	* @param - None
+	* @return - double - Current room humidity.
 	*/
 	public double getHumidity() {
 		return this.curHumidity;
 	}
 
 	/**
+	* Returns current room humidity.
+	* @param - String - Subject of email.
+	* @param - String - Body of email.
+	* @return - None
+	*/
+	public void sendEmail(String subject, String body) {
+		this.coms.sendEmail(subject, body, this.coms.getToEmail());
+	}
+
+	/**
 	* Shutdown AC Controller.
-	* @param None
-	* @return None
+	* @param - None
+	* @return - None
 	*/
 	public void shutdown() {
 		if(this.servoStatus == true)
 			switchAC();
-		System.out.println("[SHUTDOWN] Shutting down...");
+		this.log("[SHUTDOWN] Shutting down...");
 		System.exit(0);
 	}
 
 	/**
 	* Current thread sleeps for a set period of time.
-	* @param int - Minutes that current thread should sleep for.
-	* @return None
+	* @param - int - Minutes that current thread should sleep for.
+	* @return - None
 	*/
 	public void sleep(int minutes) {
 		try {
 			Thread.sleep(minutes * 60 * 1000); //Minutes to sleep * seconds to a minute * miliseconds to a second.
 		} catch(Exception e) {
-			System.out.println("[ERROR] [" + dateFormat.format(new Date()) + "] Exception occured: " + e.getMessage());
-			System.out.println("minutes: " + minutes);
+			this.log("[ERROR] Exception occured: " + e.getMessage() + "\nMinutes: " + minutes);
+			this.coms.sendEmail("AC Controller - Sleep Method Error", "The sleep method in the Controller class encountered an error.", this.coms.getToEmail());
 		}
 	}
 
 	/**
 	* Sends info to servo for it to move.
-	* @param String - Servo info for move 1.
-	* @param int - How long it takes for the servo to move in miliseconds.
-	* @param String - Servo info for move 1.
-	* @return None
+	* @param - String - Servo info for move 1.
+	* @param - int - How long it takes for the servo to move in miliseconds.
+	* @param - String - Servo info for move 1.
+	* @return - None
 	*/
 	public void moveServo(String move1, int sleep, String move2) {
 		try {
@@ -164,8 +187,18 @@ public class Controller {
 			Thread.sleep(sleep);
 			this.runTime.exec(move2); //Center Servo
 		} catch(Exception e) {
-			System.out.println("[ERROR] [" + this.dateFormat.format(new Date()) + "] Exception occured: " + e.getMessage());
-			System.out.println("move1: " + move1 + "\nsleep: " + sleep + "\nmove2: " + move2);
+			this.log("[ERROR] Exception occured: " + e.getMessage() + "\nMove 1: " + move1 + " Sleep: " + sleep + " Move 2: " + move2);
+			this.coms.sendEmail("AC Controller - Servo Motor Error", "The moveServo method in the Controller class encountered an error.", this.coms.getToEmail());
 		}
 	}
+
+	/**
+	* Send a string to the logger to be logged in a text file.
+	* @param - String - Data to be logged.
+	* @return - None
+	*/
+	public void log(String info) {
+		this.log.add(info);
+	}
+
 }

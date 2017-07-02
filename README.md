@@ -16,7 +16,17 @@ A simple Java program that turns on or off an old push button AC unit when the r
 
 ##### Compile & Run
 ```sh 
-clear && sudo javac -classpath .:/opt/pi4j/lib/'*' DHT11.java && sudo javac Controller.java && sudo javac Main.java && sudo java -classpath .:/opt/pi4j/lib/'*' Main
+sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' Logger.java
+sudo javac -classpath .:./lib/pi4j/lib/'*':./lib/javamail/'*':./lib/javamail/lib/'*' DHT11.java
+sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' Controller.java
+sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' CommunicationModule.java
+sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' Main.java
+sudo java -classpath .:./lib/pi4j/lib/'*':./lib/javamail/lib/'*':./lib/javamail/lib/'*' Main
+```
+
+##### Compile & Run - One Command
+```sh 
+clear && sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' Logger.java && sudo javac -classpath .:./lib/pi4j/lib/'*':./lib/javamail/'*':./lib/javamail/lib/'*' DHT11.java && sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' Controller.java && sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' CommunicationModule.java && sudo javac -classpath .:./lib/javamail/'*':./lib/javamail/lib/'*' Main.java && sudo java -classpath .:./lib/pi4j/lib/'*':./lib/javamail/lib/'*':./lib/javamail/lib/'*' Main
 ```
 
 ##### Run at Startup (Optional)

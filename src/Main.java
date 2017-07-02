@@ -1,51 +1,74 @@
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) {
-		final double MAX_TEMP = 84.0;
-		final double MIN_TEMP = 76.0;
-		final long MAX_AC_RUNTIME = 959999999999L; //16 minutes.
-		Controller a = new Controller(MAX_TEMP, MIN_TEMP);
-		DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a yyyy/MM/dd");
 
-		long elapsedTime = 0;
-		long totalTime = 0;
+		System.out.println("[Launcher] Getting temperature configuration.");
+
+		//Temperature Sensor
+		double maxTemp = 0.0;
+		double minTemp = 0.0;
+
+		File file = new File("TemperatureConfig.txt");
+
+	    try {
+	        Scanner sc = new Scanner(file);
+
+	        int place = 0;
+
+	        while (sc.hasNextDouble() && place <= 1) {
+	            double data = sc.nextDouble();
+
+	            switch(place) {
+	            	case 0:
+	            		maxTemp = data;
+	            		break;
+	            	case 1:
+	            		minTemp = data;
+	            		break;
+	            	default:
+	            		CommunicationModule switchComs = new CommunicationModule();
+									switchComs.sendEmail("Temperature Config File Error", "We couldn't parse TemperatureConfig.txt.", switchComs.getToEmail());
+	            		break;
+	            }
+	            place++;
+	        }
+
+	        sc.close();
+	    } catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    }
+
+		Controller a = new Controller(maxTemp, minTemp);
+
+		a.sendEmail("AC Controller Starting Up", "Your Raspberry Pi AC controller just started up.");
 
 		do {
 			a.temperatureUpdate();
 
-			if (a.getTemperature() > MAX_TEMP) {
+			if (a.getTemperature() > maxTemp) {
 
 				long timerStart = System.nanoTime(); //When did the AC turn on?
-				System.out.println("[AC ON] [" + dateFormat.format(new Date()) + "] Turning AC on. Temperature: " + a.getTemperature());
+				a.log("[AC ON] Turning AC on. Temperature: " + a.getTemperature());
 				a.switchAC(); //Turn AC on.
 
 				do {
 					a.sleep(1);
 
 					a.temperatureUpdate();
-					System.out.println("[AC ON] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
+					a.log("[AC ON] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
 					a.tempWatch();
 
-					//Room not getting hotter, but not getting that much cooler.
-					elapsedTime = System.nanoTime() - timerStart;
-					totalTime += elapsedTime;
-					/*
-					if (totalTime >= MAX_AC_RUNTIME)
-						break;
-					*/
+				} while (a.getTemperature() > minTemp);
 
-				} while (a.getTemperature() > MIN_TEMP);
-
-				System.out.println("[AC OFF] [" + dateFormat.format(new Date()) + "] Turning AC off.");
+				a.log("[AC OFF] Turning AC off.");
 				a.switchAC(); //Turn AC off.
-				elapsedTime = 0;
-				totalTime = 0;
 			}
 
-			System.out.println("[INFO] [" + dateFormat.format(new Date()) + "] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
+			a.log("[INFO] Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
 			a.tempWatch();
 
 			a.sleep(1);

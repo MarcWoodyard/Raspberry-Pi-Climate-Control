@@ -7,10 +7,11 @@ import java.text.SimpleDateFormat;
 public class DHT11 {
 	private static final int MAXTIMINGS = 85;
 	private final int[] dht11_dat = {0,0,0,0,0};
+
 	private double temperature;
 	private double humidity;
-	private Date date = new Date();
-	private DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a yyyy/MM/dd");
+
+	private CommunicationModule comsDHT11 = new CommunicationModule();
 
 	/*
 	* Creates a DHT11 object.
@@ -18,8 +19,11 @@ public class DHT11 {
 	* @return - None
 	*/
 	public DHT11() {
+
+		System.out.println("[Launcher] Configuring DHT11 temperature sensor.");
+
 		if (Gpio.wiringPiSetup() == -1) {
-			System.out.println("[ERROR] [" + this.dateFormat.format(this.date) + "] GPIO setup failed.");
+			this.comsDHT11.sendEmail("[ERROR] GPIO setup failed.", "An error occured when creating a DHT11 object", this.comsDHT11.getToEmail());
 			return;
 		}
 		GpioUtil.export(3, GpioUtil.DIRECTION_OUT);
@@ -95,7 +99,7 @@ public class DHT11 {
 	/*
 	* Returns the temperature from the sensor.
 	* @params - None
-	* @return - Double - temperature as a double. 
+	* @return - Double - temperature as a double.
 	*/
 	public double getTemperature() {
 		return this.temperature;
@@ -104,7 +108,7 @@ public class DHT11 {
 	/*
 	* Returns the humidity from the sensor.
 	* @params - None
-	* @return - Double - humidity as a double. 
+	* @return - Double - humidity as a double.
 	*/
 	public double gethumidity() {
 		return this.humidity;
