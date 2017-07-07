@@ -63,15 +63,27 @@ public class DHT11 {
 					break;
 				}
 
-				//Ignore first 3 transitions.
-				if (i >= 4 && i % 2 == 0) {
-					//Shove each bit into the storage bytes.
-					dht11_dat[j / 8] <<= 1;
-					if (counter > 16) {
-						dht11_dat[j / 8] |= 1;
+				try {
+					//Ignore first 3 transitions.
+					if (i >= 4 && i % 2 == 0) {
+					
+						dht11_dat[j / 8] <<= 1; //Shove each bit into the storage bytes.
+					
+						if (counter > 16) {
+							dht11_dat[j / 8] |= 1;
+						}
+
+						j++;
 					}
-					j++;
+				} catch(Exception  e) {
+					this.comsDHT11.sendEmail("[ERROR] DHT11 ArrayIndexOutOfBoundsException.", "An error occured when getting the temperature from the DHT11 temperature sensor. " + e, this.comsDHT11.getToEmail());
+					DHT11 tmp = new DHT11();
+					tmp.updateTemperature(7);
+					this.temperature = tmp.getTemperature();
+					this.humidity = tmp.gethumidity();
+					break;
 				}
+				
 			}
 			// check we read 40 bits (8bit x 5 ) + verify checksum in the last byte.
 			if (j >= 40 && checkParity()) {
