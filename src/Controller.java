@@ -1,3 +1,8 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import java.util.Scanner;
+
 public class Controller {
 
 	//Servo Motor
@@ -10,14 +15,13 @@ public class Controller {
 	private double curHumidity;
 	private double maxTemperature;
 	private double minTemperature;
-	private int tooHot = 0;
 
-	//Communication
-	private CommunicationModule coms;
-	private int coldEmail = 0;
+	//Temperature Safeguards
+	private int tooHot = 0;
+	private int tooCold = 0;
 
 	//Logging
-	private Logger log;
+	private Logger log = new Logger();
 
 	/**
 	* Creates a Controller object.
@@ -25,31 +29,22 @@ public class Controller {
 	* @param - double - Min Temperature.
 	* @return - None
 	*/
-	public Controller(double maxTemp, double minTemp) {
+	public Controller() {
+		this.log("[SYSTEM]", "Setting up AC Controller. Please wait...");
 
-		//Setup Temperature Sensor
-		this.maxTemperature = maxTemp;
-		this.minTemperature = minTemp;
-
-		//Set up Communications
-		this.coms = new CommunicationModule();
-
-		//Set up Logger
-		this.log = new Logger();
+		//Get Temperature Presets
+		this.scanTempFile();
 
 		//Setup Servo Motor
-		System.out.println("[Launcher] Calibrating servo motor.");
-
 		try {
-			this.log("[INFO] Starting Controller module.");
 			this.runTime.exec("gpio mode 1 pwm");
 			this.runTime.exec("gpio pwm-ms");
 			this.runTime.exec("gpio pwmc 192");
 			this.runTime.exec("gpio pwmr 2000");
 			this.runTime.exec("gpio pwm 1 130");
 		} catch(Exception e) {
-			this.log("[ERROR] Exception occured: " + e.getMessage());
-			this.coms.sendEmail("AC Controller - Error Detected", "The AC controller encountered a  servo motor error.", this.coms.getToEmail());
+			this.log("[ERROR]", "Exception occured: " + e.getMessage());
+			this.log.alert("AC Controller Servo Error", "The AC controller encountered a servo motor error.");
 		}
 	}
 
@@ -85,30 +80,29 @@ public class Controller {
 	*/
 	public void tempWatch() {
 		//Room temperature is too hot. Servo didn't hit AC button correctly.
-		if(this.curTemp >= this.maxTemperature + 1.0) {
+		if(this.curTemp >= this.maxTemperature + 2.0) {
 			this.tooHot++;
 
 			if(this.tooHot == 2) {
-				this.log("[ERROR] Temperature too hot. Correcting...");
+				this.log.add("[ERROR]", "Temperature too hot. Correcting...");
 				this.moveServo("gpio pwm 1 46", 500, "gpio pwm 1 130");
-				this.coms.sendEmail("Temperature Above Max Value!", "The temperature in your room has exceded the limit you set.", this.coms.getToEmail());
-				this.log("[NOTIF] Notification Sent.");
+				this.alert("Temperature Above Max Value!", "The temperature in your room has exceded the limit you set.");
+				this.log.add("[EMAIL]", "Email Notification Sent.");
 				this.tooHot = 0;
 			}
 		}
 
-		else if(this.curTemp <= this.minTemperature - 1.0) {
-			if(this.coldEmail == 0) {
-				this.coms.sendEmail("Temperature Below Min Value!", "The temperature in your room is below the limit you set", this.coms.getToEmail());
-				this.log("[NOTIF] Notification Sent.");
-				this.coldEmail++;
+		else if(this.curTemp <= this.minTemperature - 2.0) {
+			this.tooCold++;
+
+			if(this.tooCold == 2) {
+				this.log.add("[ERROR]", "Temperature too cold. Correcting...");
+				this.moveServo("gpio pwm 1 46", 500, "gpio pwm 1 130");
+				this.alert("Temperature Below Min Value!", "The temperature in your room has dropped below the limit you set.");
+				this.log.add("[EMIAL]", "Email Notification Sent.");
+				this.tooCold = 0;
 			}
-			else if(this.coldEmail == 10)
-				this.coldEmail = 0;
-
-				this.coldEmail++;
 		}
-
 	}
 
 	/**
@@ -138,14 +132,22 @@ public class Controller {
 		return this.curHumidity;
 	}
 
+	public double getMaxTemp() {
+		return this.maxTemperature;
+	}
+
+	public double getMinTemp() {
+		return this.minTemperature;
+	}
+
 	/**
 	* Returns current room humidity.
 	* @param - String - Subject of email.
 	* @param - String - Body of email.
 	* @return - None
 	*/
-	public void sendEmail(String subject, String body) {
-		this.coms.sendEmail(subject, body, this.coms.getToEmail());
+	public void alert(String subject, String body) {
+		this.log.alert(subject, body);
 	}
 
 	/**
@@ -156,7 +158,7 @@ public class Controller {
 	public void shutdown() {
 		if(this.servoStatus == true)
 			switchAC();
-		this.log("[SHUTDOWN] Shutting down...");
+		this.log.add("[SHUTDOWN]", "Shutting down...");
 		System.exit(0);
 	}
 
@@ -169,8 +171,8 @@ public class Controller {
 		try {
 			Thread.sleep(minutes * 60 * 1000); //Minutes to sleep * seconds to a minute * miliseconds to a second.
 		} catch(Exception e) {
-			this.log("[ERROR] Exception occured: " + e.getMessage() + "\nMinutes: " + minutes);
-			this.coms.sendEmail("AC Controller - Sleep Method Error", "The sleep method in the Controller class encountered an error.", this.coms.getToEmail());
+			this.log.add("[ERROR]", "Exception occured: " + e.getMessage() + "\nMinutes: " + minutes);
+			this.log.alert("AC Controller - Sleep Method Error", "The sleep method in the Controller class encountered an error.");
 		}
 	}
 
@@ -181,14 +183,14 @@ public class Controller {
 	* @param - String - Servo info for move 1.
 	* @return - None
 	*/
-	public void moveServo(String move1, int sleep, String move2) {
+	private void moveServo(String move1, int sleep, String move2) {
 		try {
 			this.runTime.exec(move1); //Turn AC on/off.
 			Thread.sleep(sleep);
 			this.runTime.exec(move2); //Center Servo
 		} catch(Exception e) {
-			this.log("[ERROR] Exception occured: " + e.getMessage() + "\nMove 1: " + move1 + " Sleep: " + sleep + " Move 2: " + move2);
-			this.coms.sendEmail("AC Controller - Servo Motor Error", "The moveServo method in the Controller class encountered an error.", this.coms.getToEmail());
+			this.log.add("[ERROR]", "Exception occured: " + e.getMessage() + "\nMove 1: " + move1 + " Sleep: " + sleep + " Move 2: " + move2);
+			this.log.alert("AC Controller - Servo Error", "The Controler.moveServo method encountered an error.");
 		}
 	}
 
@@ -197,8 +199,34 @@ public class Controller {
 	* @param - String - Data to be logged.
 	* @return - None
 	*/
-	public void log(String info) {
-		this.log.add(info);
+	public void log(String type, String info) {
+		this.log.add(type, info);
 	}
 
+	private void scanTempFile() {
+		File file = new File("Config", "TemperatureConfig.txt");
+
+	    try {
+	        Scanner sc = new Scanner(file);
+	        int place = 0;
+
+	        while (sc.hasNextDouble() && place <= 1) {
+	            double data = sc.nextDouble();
+
+	            switch(place) {
+	            	case 0:
+	            		this.maxTemperature = data;
+	            		break;
+	            	case 1:
+	            		this.minTemperature = data;
+	            		break;
+	            }
+	            place++;
+	        }
+
+	        sc.close();
+	    } catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    }
+	}
 }

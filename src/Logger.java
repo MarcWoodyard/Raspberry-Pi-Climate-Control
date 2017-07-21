@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.Scanner;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -6,42 +7,61 @@ import java.text.SimpleDateFormat;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 
 public class Logger {
 
-	private static File errorLog = new File("Logs", "ErrorLog.txt");
-	private static File log = new File("Logs", "Log.txt");
+	private File log = new File("Logs", "Log.txt");
+	private File errorLog = new File("Logs", "ErrorLog.txt");
 
-	private static DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a yyyy/MM/dd");
+	private Scanner logScan;
+	private Scanner errorScan;
 
-	private static CommunicationModule loggerComs = new CommunicationModule();
+	private DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a MM/dd/yyyy");
+
+	private CommunicationModule coms = new CommunicationModule();
 
 	/**
-	* Creates a Logger object.
-	* @param - None
-	* @return - None
-	*/
+	 * Creates a Logger object.
+	 * @param - None
+	 * @return - None
+	 */
 	public Logger() {
-		System.out.println("[Launcher] Starting logging service.");
+
+		try {
+			this.logScan = new Scanner(log);
+			this.errorScan = new Scanner(errorLog);
+			this.logScan = new Scanner(log);
+			this.errorScan = new Scanner(errorLog);
+		}
+
+		catch (Exception e) {
+			this.alert("An Exception Occured in Logger.java","" + Exception);
+			e.printStackTrace();
+		}
+/*
+		catch (FileNotFoundException fileEx) {
+			this.alert("An Exception Occured in Logger.java","" + fileEx);
+			fileEx.printStackTrace();
+		}
+*/
 	}
 
-
 	/**
-	* Logs a program event to a log file and outputs the data to the console.
-	* @param - String - Log data to be written to the log file and output data to console.
-	* @return - None
-	*/
-	public void add(String info) {
+	 * Logs a program event to a log file and outputs the data to the console.
+	 * @param - String - Log data to be written to the log file and output data to console.
+	 * @return - None
+	 */
+	public void add(String type, String info) {
 
-		if(info.contains("[ERROR]")) {
+		if(type.equals("[ERROR]")) {
 			try {
 				FileWriter errorWriter = new FileWriter(errorLog, true);
 				errorWriter.write("\r\n[" + this.dateFormat.format(new Date()) + "]" + info);
 				errorWriter.flush();
 				errorWriter.close();
 			} catch (IOException e) {
-				loggerComs.sendEmail("Logger Service Crashed", "The AC controller logger service crashed.", this.loggerComs.getToEmail());
-				e.printStackTrace();
+				this.alert("An Exception Occured in Logger.java","" + e);
 			}
 		}
 
@@ -51,10 +71,36 @@ public class Logger {
 			logWriter.flush();
 			logWriter.close();
 		} catch (IOException e) {
-			loggerComs.sendEmail("Logger Service Crashed", "The AC controller logger service crashed.", this.loggerComs.getToEmail());
+			this.alert("An Exception Occured in Logger.java","" + e);
+		}
+
+		System.out.println(type + " [" + this.dateFormat.format(new Date()) + "] " + info);
+	}
+
+	/**
+	* Cleans up old log entries.
+	* @param - None
+	* @return - None
+	*/ /*
+	public boolean cleanLogs() {
+		try {
+			String logEntry = logScan.nextLine().subString(9,31);
+		} catch (Exception e) {
+			this.alert("An Exception Occured in Logger.java","" + e);
 			e.printStackTrace();
 		}
 
-		System.out.println("[" + this.dateFormat.format(new Date()) + "]" + info);
+		return false;
+	}
+	*/
+
+	/**
+	* Returns current room humidity.
+	* @param - String - Subject of email.
+	* @param - String - Body of email.
+	* @return - None
+	*/
+	public void alert(String subject, String body) {
+			this.coms.sendEmail(subject, body);
 	}
 }

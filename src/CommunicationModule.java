@@ -33,17 +33,14 @@ public class CommunicationModule {
 	private String enableSTARTLS;
 	private String username;
 	private String password;
-	
+
 	/**
 	* Creates a CommunicationModule object.
 	* @param - None
 	* @return - None
 	*/
 	public CommunicationModule() {
-
-		System.out.println("[Launcher] Setting up communication channels.");
-		
-		File file = new File("EmailConfig.txt");
+		File file = new File("Config", "EmailConfig.txt");
 
 	    try {
 	        Scanner sc = new Scanner(file);
@@ -99,7 +96,7 @@ public class CommunicationModule {
 	* @param - String - Email address of the recipient.
 	* @return - None
 	*/
-	public void sendEmail (String subject, String body, String toEmail) {
+	public void sendEmail (String subject, String body) {
 		//Credit: http://www.journaldev.com/2532/javamail-example-send-mail-in-java-smtp
 		Properties props = new Properties();
 		props.put("mail.smtp.host", this.smtpServer);
@@ -112,7 +109,7 @@ public class CommunicationModule {
 				String fromEmail = "";
 				String password = "";
 
-				File file = new File("EmailConfig.txt");
+				File file = new File("Config", "EmailConfig.txt");
 					try {
 							Scanner sc = new Scanner(file);
 							int place = 0;
@@ -138,7 +135,7 @@ public class CommunicationModule {
 		};
 
 		Session session = Session.getInstance(props, auth);
-		this.emailWorker(session, toEmail, subject, body);
+		this.emailWorker(session, this.toEmail, subject, body);
 	}
 
 	/**
@@ -174,7 +171,7 @@ public class CommunicationModule {
 	/**
 	 * In Development - Send SMS notifications.
 	 * @param - None
-	 * @return - None 
+	 * @return - None
 	 */
 	public void sendSMS() {
 		//https://www.twilio.com/blog/2016/04/sending-sms-with-java.html
@@ -183,7 +180,7 @@ public class CommunicationModule {
 	/**
 	 * Returns the email address that will be receiving email notifications.
 	 * @param - None
-	 * @return - String - Email address receiving notifications. 
+	 * @return - String - Email address receiving notifications.
 	 */
 	public String getToEmail() {
 		return this.toEmail;
@@ -192,7 +189,7 @@ public class CommunicationModule {
 	/**
 	 * Returns the email address that will be sending email notifications.
 	 * @param - None
-	 * @return - String - Email address sending notifications. 
+	 * @return - String - Email address sending notifications.
 	 */
 	public String getFromEmail() {
 		return this.fromEmail;
