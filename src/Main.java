@@ -7,7 +7,7 @@ public class Main {
 		do {
 			a.temperatureUpdate();
 
-			if (a.getTemperature() > a.getMaxTemp()) {
+			if (a.getTemperature() >= a.getMaxTemp()) {
 				a.log("[AC ON]", "Turning AC on. Temperature: " + a.getTemperature());
 				a.switchAC(); //Turn AC on.
 
@@ -21,12 +21,19 @@ public class Main {
 
 				a.log("[AC OFF]", "Turning AC off.");
 				a.switchAC(); //Turn AC off.
+
+				a.sleep(1);
+				do {
+					a.temperatureUpdate();
+					a.log("[INFO]","Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
+					a.tempWatch();
+					a.sleep(1);
+				} while(a.getTemperature() < a.getMinTemp());
+
 			}
 
 			a.log("[INFO]","Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
-			a.tempWatch();
 			a.sleep(1);
-
-		} while (1 == 1);
+		} while (true);
 	}
 }

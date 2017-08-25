@@ -36,7 +36,7 @@ public class Logger {
 		}
 
 		catch (Exception e) {
-			this.alert("An Exception Occured in Logger.java","" + Exception);
+			this.alert("An Exception Occured in Logger.java","" + e);
 			e.printStackTrace();
 		}
 /*
