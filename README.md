@@ -1,4 +1,6 @@
 # Raspberry Pi Climate Control
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control?ref=badge_shield)
+
 
 A simple Java program that turns on or off an old push button AC unit when the room reaches a certain temperature.
 
@@ -48,3 +50,7 @@ https://github.com/Pi4J/pi4j/issues/319
 ```sh 
 sudo rpi-update 52241088c1da59a359110d39c1875cda56496764
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control?ref=badge_large)
