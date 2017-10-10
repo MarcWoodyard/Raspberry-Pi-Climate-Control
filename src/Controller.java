@@ -1,6 +1,12 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import utils.CommunicationModule;
+import utils.Logger;
+
+import sensors.DHT11;
+import sensors.Servo;
+
 import java.util.Scanner;
 
 public class Controller {
@@ -24,24 +30,22 @@ public class Controller {
 
 	/**
 	* Creates a Controller object.
+	*
 	* @param - double - Max Temperature.
 	* @param - double - Min Temperature.
-	* @return - None
 	*/
-	public Controller() {
+	public Controller(double max, double min) {
 		this.log("[SYSTEM]", "Setting up AC Controller. Please wait...");
 
-		//Get Temperature Presets
-		this.scanTempFile();
+		this.maxTemperature = max;
+		this.minTemperature = min;
 	}
 
 	/**
 	* Turn AC on/off.
-	* @param - None
-	* @return - None
 	*/
 	public void switchAC() {
-		this.servo.moveServo(48, 500, 130);
+		this.servo.switchAC();
 
 		//Reset tempWatch();
 		this.tooHot = 0;
@@ -50,8 +54,6 @@ public class Controller {
 
 	/**
 	* Updates room temperature and humidity values.
-	* @param - None
-	* @return - None
 	*/
 	public void temperatureUpdate() {
 		this.tempSensor.updateTemperature(7);
@@ -61,50 +63,48 @@ public class Controller {
 
 	/**
 	* Ensures the room doesn't get too hot or cold.
-	* @param - None
-	* @return - None
 	*/
 	public void tempWatch() {
 		//Room temperature is too hot. Servo didn't hit AC button correctly.
 		if(this.curTemp >= this.maxTemperature) {
 			this.tooHot++;
 
-			if(this.tooHot == 3 || this.tooHot == 6) {
+			if(this.tooHot == 1) {
 				this.log("[ERROR]", "Temperature too hot. Correcting...");
 				this.alert("Temperature Above Max Value!", "The temperature in your room has exceded the limit you set.");
-				this.servo.moveServo(47, 500, 130);
+				this.servo.moveServo(50, 600, 60);
 			}
-			else if(this.tooHot > 6) {
-				this.log("Creating New Servo Object", "Temperature too hot. Creating new Java servo object.");
+			else if(this.tooHot >= 2) {
+				this.log("[ERROR]", "Temperature too hot. Creating new Java servo object.");
 				this.alert("Creating New Servo Object", "Temperature too hot. Creating new Java servo object.");
 				this.tooHot = 0;
 				this.servo = new Servo();
-				this.servo.moveServo(47, 500, 130);
+				this.servo.moveServo(50, 600, 60);
 			}
 		}
 
 		//Room temperature is too cold. Servo didn't hit AC button correctly.
-		else if(this.curTemp <= this.minTemperature) {
+		else if(this.curTemp < this.minTemperature) {
 			this.tooCold++;
 
-			if(this.tooCold == 5 || this.tooCold == 10) {
+			if(this.tooCold == 1) {
 				this.log("[ERROR]", "Temperature too cold. Correcting...");
 				this.alert("Temperature Below Min Value!", "The temperature in your room has dropped below the limit you set.");
-				this.servo.moveServo(47, 500, 130);
+				this.servo.moveServo(50, 600, 60);
 			}
-			else if(this.tooCold > 10) {
-				this.log("Creating New Servo Object", "Temperature too hot. Creating new Java servo object.");
-				this.alert("Creating New Servo Object", "Temperature too hot. Creating new Java servo object.");
+			else if(this.tooCold >= 2) {
+				this.log("[ERROR]", "Temperature too cold. Creating new Java servo object.");
+				this.alert("Creating New Servo Object", "Temperature too cold. Creating new Java servo object.");
 				this.tooCold = 0;
 				this.servo = new Servo();
-				this.servo.moveServo(47, 500, 130);
+				this.servo.moveServo(50, 600, 60);
 			}
 		}
 	}
 
 	/**
 	* Returns current servo status.
-	* @param - None
+	*
 	* @return - boolean - Return current servo status.
 	*/
 	public boolean getServoStatus() {
@@ -113,7 +113,7 @@ public class Controller {
 
 	/**
 	* Returns current room temperature.
-	* @param - None
+	*
 	* @return - double - Current room temperature.
 	*/
 	public double getTemperature() {
@@ -122,7 +122,7 @@ public class Controller {
 
 	/**
 	* Returns current room humidity.
-	* @param - None
+	*
 	* @return - double - Current room humidity.
 	*/
 	public double getHumidity() {
@@ -131,7 +131,7 @@ public class Controller {
 
 	/**
 	* Returns the max temperature set in the config file.
-	* @param - None
+	*
 	* @return - double - Min temperature.
 	*/
 	public double getMaxTemp() {
@@ -140,7 +140,7 @@ public class Controller {
 
 	/**
 	* Returns the min temperature set in the config file.
-	* @param - None
+	*
 	* @return - double - Min temperature.
 	*/
 	public double getMinTemp() {
@@ -149,8 +149,8 @@ public class Controller {
 
 	/**
 	* Current thread sleeps for a set period of time.
+	*
 	* @param - int - Minutes that current thread should sleep for.
-	* @return - None
 	*/
 	public void sleep(int minutes) {
 		try {
@@ -163,60 +163,27 @@ public class Controller {
 
 	/**
 	* Send a string to the logger to be logged in a text file.
+	*
 	* @param - String - What type of event is it ([ERROR], [INFO]...).
 	* @param - String - Data to be logged.
-	* @return - None
 	*/
 	public void log(String type, String info) {
 		this.log.add(type, info);
 	}
 
 	/**
-	* Returns current room humidity.
+	* Send an email alert.
+	*
 	* @param - String - Subject of email.
 	* @param - String - Body of email.
-	* @return - None
 	*/
 	public void alert(String subject, String body) {
 		this.log.alert(subject, body);
 	}
 
 	/**
-	* Scans TemperatureConfig.txt to get the min and max temperature.
-	* @param - None
-	* @return - None
-	*/
-	private void scanTempFile() {
-		File file = new File("Config", "TemperatureConfig.txt");
-
-	    try {
-	        Scanner sc = new Scanner(file);
-	        int place = 0;
-
-	        while (sc.hasNextDouble() && place <= 1) {
-	            double data = sc.nextDouble();
-
-	            switch(place) {
-	            	case 0:
-	            		this.maxTemperature = data;
-	            		break;
-	            	case 1:
-	            		this.minTemperature = data;
-	            		break;
-	            }
-	            place++;
-	        }
-
-	        sc.close();
-	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
-	    }
-	}
-
-	/**
 	* Shutdown AC Controller.
-	* @param - None
-	* @return - None
+	*
 	*/
 	public void shutdown() {
 		if(this.servo.getServoStatus() == true)
@@ -225,4 +192,12 @@ public class Controller {
 		this.alert("AC Controller Shutting Down", "The AC Controller is shutting down.");
 		System.exit(0);
 	}
+
+	/**
+	* Cleans up the AC controller system logs.
+	*/
+	public void cleanLogs() {
+		this.log.cleanLogs();
+	}
+
 }

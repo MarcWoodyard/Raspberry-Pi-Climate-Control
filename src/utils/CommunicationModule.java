@@ -1,3 +1,5 @@
+package utils;
+
 import java.util.Scanner;
 import java.util.Properties;
 import java.util.Date;
@@ -25,79 +27,80 @@ import javax.mail.PasswordAuthentication;
 
 public class CommunicationModule {
 
-	private String fromEmail;
-	private String toEmail;
-	private String smtpServer;
-	private String port;
-	private String enableAuth;
-	private String enableSTARTLS;
-	private String username;
-	private String password;
+	private static String fromEmail;
+	private static String toEmail;
+	private static String smtpServer;
+	private static String port;
+	private static String enableAuth;
+	private static String enableSTARTLS;
+	private static String username;
+	private static String password;
+
+	private static final File emailConfig = new File("./src/Config/EmailConfig.txt");
 
 	/**
 	* Creates a CommunicationModule object.
-	* @param - None
-	* @return - None
 	*/
 	public CommunicationModule() {
-		File file = new File("Config", "EmailConfig.txt");
+		if(this.fromEmail == null || this.toEmail == null || this.smtpServer == null || this.port == null
+		|| this.enableAuth == null || this.username == null || this.password == null) {
 
-	    try {
-	        Scanner sc = new Scanner(file);
+				try {
+						Scanner sc = new Scanner(this.emailConfig);
 
-	        int place = 0;
+						int place = 0;
 
-	        while (sc.hasNextLine() && place <= 7) {
-	            String data = sc.nextLine();
+						while (sc.hasNextLine() && place <= 7) {
+								String data = sc.nextLine();
 
-	            switch(place) {
-	            	case 0:
-	            		this.fromEmail = data;
-	            		break;
-	            	case 1:
-	            		this.toEmail = data;
-	            		break;
-	            	case 2:
-	            		this.smtpServer = data;
-	            		break;
-	            	case 3:
-	            		this.port = data;
-	            		break;
-	            	case 4:
-	            		this.enableAuth = data;
-	            		break;
-	            	case 5:
-	            		this.enableSTARTLS = data;
-	            		break;
-	            	case 6:
-	            		this.username = data;
-	            		break;
-	            	case 7:
-	            		this.password = data;
-	            		break;
-	            	default:
-	            		System.out.println("Too many parameters in EmailConfig.txt.\n Program exiting...");
-	            		System.exit(0);
-	            		break;
-	            }
-	            place++;
-	        }
+								switch(place) {
+									case 0:
+										this.fromEmail = data;
+										break;
+									case 1:
+										this.toEmail = data;
+										break;
+									case 2:
+										this.smtpServer = data;
+										break;
+									case 3:
+										this.port = data;
+										break;
+									case 4:
+										this.enableAuth = data;
+										break;
+									case 5:
+										this.enableSTARTLS = data;
+										break;
+									case 6:
+										this.username = data;
+										break;
+									case 7:
+										this.password = data;
+										break;
+									default:
+										System.out.println("Too many parameters in EmailConfig.txt.\n Program exiting...");
+										System.exit(0);
+										break;
+								}
+								place++;
+						}
 
-	        sc.close();
-	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
-	    }
+						sc.close();
+				} catch (FileNotFoundException e) {
+						e.printStackTrace();
+				}
+		}
 	}
 
 	/**
-	* Creates a CommunicationModule object.
+	* Sends a email message.
+	*
 	* @param - String - Subject of the email.
 	* @param - String - Body of the email.
-	* @param - String - Email address of the recipient.
-	* @return - None
 	*/
 	public void sendEmail (String subject, String body) {
-		//Credit: http://www.journaldev.com/2532/javamail-example-send-mail-in-java-smtp
+		// Credit: http://www.journaldev.com/2532/javamail-example-send-mail-in-java-smtp
 		Properties props = new Properties();
 		props.put("mail.smtp.host", this.smtpServer);
 		props.put("mail.smtp.port", this.port);
@@ -108,10 +111,10 @@ public class CommunicationModule {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				String fromEmail = "";
 				String password = "";
+				File emailConfig = new File("./src/Config/EmailConfig.txt");
 
-				File file = new File("Config", "EmailConfig.txt");
 					try {
-							Scanner sc = new Scanner(file);
+							Scanner sc = new Scanner(emailConfig);
 							int place = 0;
 
 							while (sc.hasNextLine() && place <= 7) {
@@ -140,11 +143,11 @@ public class CommunicationModule {
 
 	/**
 	 * Utility method to send simple HTML email
+	 *
 	 * @param - Session - A session object.
 	 * @param - String - Email address where you want to send email.
 	 * @param - String - Subject line of email.
 	 * @param - String - Body of email.
-	 * @return - None
 	 */
 	private void emailWorker(Session session, String toEmail, String subject, String body){
 		try {
@@ -170,16 +173,17 @@ public class CommunicationModule {
 
 	/**
 	 * In Development - Send SMS notifications.
-	 * @param - None
-	 * @return - None
+	 *
+	 * @param - int - Phone number to send message to.
+	 * @return - String - A message to send.
 	 */
-	public void sendSMS() {
+	public void sendSMS(int number, String message) {
 		//https://www.twilio.com/blog/2016/04/sending-sms-with-java.html
 	}
 
 	/**
 	 * Returns the email address that will be receiving email notifications.
-	 * @param - None
+	 *
 	 * @return - String - Email address receiving notifications.
 	 */
 	public String getToEmail() {
@@ -188,7 +192,7 @@ public class CommunicationModule {
 
 	/**
 	 * Returns the email address that will be sending email notifications.
-	 * @param - None
+	 *
 	 * @return - String - Email address sending notifications.
 	 */
 	public String getFromEmail() {

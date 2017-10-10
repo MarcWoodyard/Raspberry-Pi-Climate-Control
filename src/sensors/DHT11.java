@@ -1,8 +1,14 @@
+package sensors;
+
+import utils.Logger;
+
 import java.util.Date;
+
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
-import java.text.SimpleDateFormat;
 
 public class DHT11 {
 	private static final int MAXTIMINGS = 85;
@@ -17,8 +23,6 @@ public class DHT11 {
 
 	/**
 	* Creates a DHT11 object.
-	* @param - None
-	* @return - None
 	*/
 	public DHT11() {
 		if (Gpio.wiringPiSetup() == -1) {
@@ -32,8 +36,8 @@ public class DHT11 {
 
 	/**
 	* Updates the temperature and humidity data from the sensor.
+	*
 	* @param - int - Raspberry Pi pin sensor is connected to.
-	* @return - None
 	*/
 	public void updateTemperature(final int pin) {
 		do {
@@ -107,7 +111,7 @@ public class DHT11 {
 				if ((dht11_dat[2] & 0x80) != 0) {
 					c = -c;
 				}
-				
+
 				final float f = c * 1.8f + 32;
 				this.temperature = f;
 				this.humidity = h;
@@ -122,7 +126,7 @@ public class DHT11 {
 
 	/**
 	* Returns the temperature from the sensor.
-	* @param - None
+	*
 	* @return - Double - temperature as a double.
 	*/
 	public double getTemperature() {
@@ -131,7 +135,7 @@ public class DHT11 {
 
 	/**
 	* Returns the humidity from the sensor.
-	* @param - None
+	*
 	* @return - Double - humidity as a double.
 	*/
 	public double gethumidity() {
@@ -140,7 +144,7 @@ public class DHT11 {
 
 	/**
 	* Returns the humidity from the sensor.
-	* @param - None
+	*
 	* @return - Boolean - True of false depending of temperature data array.
 	*/
 	private boolean checkParity() {
