@@ -57,6 +57,7 @@ public class Main {
 				a.tempWatch();
 			} catch (Exception e) {
 				a.alert("AC Controller ERROR!", "An error occured while the AC Controller was running. \n\nDebug Information:\n----------------\n\n" + e.printStackTrace())
+				a.sleep(1);
 			}	
 		}
 	}
