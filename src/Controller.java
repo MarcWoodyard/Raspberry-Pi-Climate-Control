@@ -183,7 +183,6 @@ public class Controller {
 
 	/**
 	* Shutdown AC Controller.
-	*
 	*/
 	public void shutdown() {
 		if(this.servo.getServoStatus() == true)
@@ -199,5 +198,4 @@ public class Controller {
 	public void cleanLogs() {
 		this.log.cleanLogs();
 	}
-
 }
