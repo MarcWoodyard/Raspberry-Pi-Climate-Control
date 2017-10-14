@@ -10,7 +10,7 @@ public class Main {
 		    try {
 		        max = Double.parseDouble(args[0]);
 		        min = Double.parseDouble(args[1]);
-				sleepTime = Integer.parseInt(args[2]);
+			sleepTime = Integer.parseInt(args[2]);
 		    } catch (NumberFormatException e) {
 		        System.out.println("Arguments must be in double format. [Max Temperature (Double)] [Min Temperature (Double)] [Sleep Time (Integer)]");
 		        System.exit(0);
