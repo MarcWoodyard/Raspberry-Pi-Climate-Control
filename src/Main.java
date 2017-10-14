@@ -54,8 +54,6 @@ public class Main {
 
 				a.log("[INFO]","Temperature: " + a.getTemperature() + " Humidity: " + a.getHumidity());
 				a.sleep(sleepTime);
-
-				// Temporary - Disable during winter months.
 				a.tempWatch();
 			} catch (Exception e) {
 				a.alert("AC Controller ERROR!", "An error occured while the AC Controller was running. \n\nDebug Information:\n----------------\n\n" + e.printStackTrace())
