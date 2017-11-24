@@ -1,6 +1,6 @@
 # Raspberry Pi Climate Control
 
-A simple Java program that turns on or off an old push button AC unit when the room reaches a certain temperature.
+A simple Java program that turns on or off an old push button AC unit when the room reaches a certain temperature + some advanced features.
 
 <p align="center">
   <img width="460" height="300" src="https://raw.githubusercontent.com/MarcWoodyard/Raspberry-Pi-Climate-Control/master/screenshot.png">
