@@ -2,128 +2,141 @@ package utils;
 
 import java.util.Date;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.BufferedReader;
 
 public class Logger {
-	private static final File log = new File("./src/Logs/Log.txt");
-	private static final File errorLog = new File("./src/Logs/ErrorLog.txt");
 
-	private Scanner logScan;
-	private Scanner errorScan;
+	// Log Files
+	private static File log = new File("./src/Logs/Log.txt");
+	private static File errorLog = new File("./src/Logs/ErrorLog.txt");
+	private static double logSize = (double) log.length() / (1024 * 1024); // Size in MB
+	private static double errorLogSize = (double) errorLog.length() / (1024 * 1024); // Size in MB
 
+	// File Writer
+	private static FileWriter logWriter = null;
+	private static FileWriter errorWriter = null;
+
+	// Dates
 	private static DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a MM/dd/yyyy");
 	private static DateFormat day = new SimpleDateFormat("dd");
 
+	// Communication Module
 	private static CommunicationModule coms = new CommunicationModule();
 
-	/**
-	 * Creates a Logger object.
-	 */
 	public Logger() {
 		try {
-			this.logScan = new Scanner(log);
-			this.errorScan = new Scanner(errorLog);
-		}
-		catch (Exception e) {
-			this.alert("An Exception Occured in Logger.java","" + e);
+			if (logWriter == null) {
+				logWriter = new FileWriter(log, true);
+			}
+
+			if (errorWriter == null) {
+				errorWriter = new FileWriter(errorLog, true);
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
 	 * Logs a program event to a log file and outputs the data to the console.
-	 *
-	 * @param - String - Log data to be written to the log file and output data to console.
+	 * @param String - Specifies the type of log entry ([ERROR], [INFO]).
+	 * @param String - Log data to be written to the log file and output data to console.
 	 */
 	public void add(String type, String info) {
-
-		int date = Integer.parseInt(this.day.format(new Date()));
-		if(date == 11 || date == 25)
+		if (Integer.parseInt(day.format(new Date())) == 11 || Integer.parseInt(day.format(new Date())) == 25)
 			this.cleanLogs();
 
-		if(type.equals("[ERROR]")) {
+		if (type.contains("[ERROR]")) {
 			try {
-				FileWriter errorWriter = new FileWriter(errorLog, true);
-				errorWriter.write("\r\n[" + this.dateFormat.format(new Date()) + "]" + info);
+				errorWriter.write("\r\n[" + dateFormat.format(new Date()) + "]" + info);
 				errorWriter.flush();
-				errorWriter.close();
-			} catch (IOException e) {
-				this.alert("An Exception Occured in Logger.java","" + e);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
 		try {
-			FileWriter logWriter = new FileWriter(log, true);
-			logWriter.write("\r\n[" + this.dateFormat.format(new Date()) + "]" + info);
+			logWriter.write("\r\n[" + dateFormat.format(new Date()) + "]" + info);
 			logWriter.flush();
-			logWriter.close();
-		} catch (IOException e) {
-			this.alert("An Exception Occured in Logger.java","" + e);
-		}
-
-		System.out.println(type + " [" + this.dateFormat.format(new Date()) + "] " + info);
-	}
-
-	/**
-	* Cleans up old log entries.
-	*/
-	public boolean cleanLogs() {
-		try {
-
-			File tmp = this.log;
-			double fileSize;
-
-			double bytes = 0.0;
-			double kilobytes = (bytes / 1024);
-			double megabytes = (kilobytes / 1024);
-			// double gigabytes = (megabytes / 1024);
-			// double terabytes = (gigabytes / 1024);
-			// double petabytes = (terabytes / 1024);
-			// double exabytes = (petabytes / 1024);
-			// double zettabytes = (exabytes / 1024);
-			// double yottabytes = (zettabytes / 1024);
-
-			for(int i = 0; i <= 1; i++) {
-
-				if(i == 0)
-					tmp = this.log;
-				else
-					tmp = this.errorLog;
-
-				bytes = tmp.length();
-				fileSize = megabytes;
-
-				if(fileSize > 5.0) {
-					tmp.delete();
-					tmp.createNewFile();
-				}
-			}
-
-
 		} catch (Exception e) {
-			this.alert("An Exception Occured in Logger.java","" + e);
 			e.printStackTrace();
-			return false;
 		}
 
-		return true;
+		System.out.println(type + " [" + dateFormat.format(new Date()) + "] " + info);
 	}
 
+	/**
+	 * Add log enteries to new log file after deleting the old one.
+	 */
+	private void add(String data) {
+		try {
+			if (data.contains("[ERROR]")) {
+				errorWriter.write(data);
+				errorWriter.flush();
+			}
+			logWriter.write(data);
+			logWriter.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
-	* Sends an alert email.
-	*
-	* @param - String - Subject of email.
-	* @param - String - Body of email.
-	*/
+	 * Cleans up old log entries.
+	 */
+	private void cleanLogs() {
+		try {
+			if (logSize > 5.0) {
+				BufferedReader br = new BufferedReader(new FileReader(log));
+				ArrayList<String> logEnteries = new ArrayList<>();
+
+				for (int i = 0; i <= 100; i++)
+					logEnteries.add(br.readLine());
+
+				String logPath = log.getPath();
+				log.delete();
+				log = new File(logPath);
+
+				for (int j = 0; j < logEnteries.size(); j++)
+					this.add(logEnteries.get(j));
+
+				br.close();
+			} else if (errorLogSize > 5.0) {
+				BufferedReader br = new BufferedReader(new FileReader(log));
+				ArrayList<String> logEnteries = new ArrayList<>();
+
+				for (int i = 0; i <= 100; i++)
+					logEnteries.add(br.readLine());
+
+				String logPath = errorLog.getPath();
+				errorLog.delete();
+				errorLog = new File(logPath);
+
+				for (int j = 0; j < logEnteries.size(); j++)
+					this.add(logEnteries.get(j));
+
+				br.close();
+			}
+		} catch (Exception e) {
+			this.alert("[ERROR] Exception in Logger.java", "An Exception Occured in Logger.java " + e);
+		}
+	}
+
+	/**
+	 * Sends an alert email.
+	 * @param String - Subject of email.
+	 * @param String - Body of email.
+	 */
 	public void alert(String subject, String body) {
-			this.coms.sendEmail(subject, body);
+		coms.sendEmail(subject, body);
+		this.add(subject, body);
 	}
 }

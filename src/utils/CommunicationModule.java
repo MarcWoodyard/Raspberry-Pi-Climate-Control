@@ -27,175 +27,117 @@ import javax.mail.PasswordAuthentication;
 
 public class CommunicationModule {
 
-	private static String fromEmail;
-	private static String toEmail;
-	private static String smtpServer;
-	private static String port;
-	private static String enableAuth;
-	private static String enableSTARTLS;
-	private static String username;
-	private static String password;
+	private static MailAuth mailAuth = null;
 
-	private static final File emailConfig = new File("./src/Config/EmailConfig.txt");
-
-	/**
-	* Creates a CommunicationModule object.
-	*/
 	public CommunicationModule() {
-		if(this.fromEmail == null || this.toEmail == null || this.smtpServer == null || this.port == null
-		|| this.enableAuth == null || this.username == null || this.password == null) {
-
-				try {
-						Scanner sc = new Scanner(this.emailConfig);
-
-						int place = 0;
-
-						while (sc.hasNextLine() && place <= 7) {
-								String data = sc.nextLine();
-
-								switch(place) {
-									case 0:
-										this.fromEmail = data;
-										break;
-									case 1:
-										this.toEmail = data;
-										break;
-									case 2:
-										this.smtpServer = data;
-										break;
-									case 3:
-										this.port = data;
-										break;
-									case 4:
-										this.enableAuth = data;
-										break;
-									case 5:
-										this.enableSTARTLS = data;
-										break;
-									case 6:
-										this.username = data;
-										break;
-									case 7:
-										this.password = data;
-										break;
-									default:
-										System.out.println("Too many parameters in EmailConfig.txt.\n Program exiting...");
-										System.exit(0);
-										break;
-								}
-								place++;
-						}
-
-						sc.close();
-				} catch (FileNotFoundException e) {
-						e.printStackTrace();
-				}
-		}
+		if (mailAuth == null)
+			mailAuth = new MailAuth();
 	}
 
 	/**
 	* Sends a email message.
-	*
-	* @param - String - Subject of the email.
-	* @param - String - Body of the email.
+	* @param String - Subject of the email.
+	* @param String - Body of the email.
 	*/
-	public void sendEmail (String subject, String body) {
-		// Credit: http://www.journaldev.com/2532/javamail-example-send-mail-in-java-smtp
+	public void sendEmail(String subject, String body) {
 		Properties props = new Properties();
-		props.put("mail.smtp.host", this.smtpServer);
-		props.put("mail.smtp.port", this.port);
-		props.put("mail.smtp.auth", this.enableAuth);
-		props.put("mail.smtp.starttls.enable", this.enableSTARTLS);
-
-		Authenticator auth = new Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				String fromEmail = "";
-				String password = "";
-				File emailConfig = new File("./src/Config/EmailConfig.txt");
-
-					try {
-							Scanner sc = new Scanner(emailConfig);
-							int place = 0;
-
-							while (sc.hasNextLine() && place <= 7) {
-									String data = sc.nextLine();
-
-									switch(place) {
-										case 0:
-											fromEmail = data;
-											break;
-										case 7:
-											password = data;
-											break;
-									}
-									place++;
-								}
-						} catch (FileNotFoundException e) {
-										e.printStackTrace();
-						}
-				return new PasswordAuthentication(fromEmail, password);
-			}
-		};
-
-		Session session = Session.getInstance(props, auth);
-		this.emailWorker(session, this.toEmail, subject, body);
+		props.put("mail.smtp.host", mailAuth.getSMTPServer());
+		props.put("mail.smtp.port", mailAuth.getPort());
+		props.put("mail.smtp.auth", mailAuth.getEnableAuth());
+		props.put("mail.smtp.starttls.enable", mailAuth.getEnableSTARTLS());
+		this.emailWorker(Session.getInstance(props, mailAuth.getAuth()), mailAuth.getToEmail(), subject, body);
 	}
 
 	/**
 	 * Utility method to send simple HTML email
-	 *
-	 * @param - Session - A session object.
-	 * @param - String - Email address where you want to send email.
-	 * @param - String - Subject line of email.
-	 * @param - String - Body of email.
+	 * @param Session - A session object.
+	 * @param String - Email address where you want to send email.
+	 * @param String - Subject line of email.
+	 * @param String - Body of email.
 	 */
-	private void emailWorker(Session session, String toEmail, String subject, String body){
+	private void emailWorker(Session session, String toEmail, String subject, String body) {
 		try {
-	      MimeMessage msg = new MimeMessage(session);
-	      //Message Headers
-	      msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
-	      msg.addHeader("format", "flowed");
-	      msg.addHeader("Content-Transfer-Encoding", "8bit");
-
-	      msg.setFrom(new InternetAddress(this.fromEmail, this.fromEmail));
-	      msg.setReplyTo(InternetAddress.parse(this.fromEmail, false));
-	      msg.setSubject(subject, "UTF-8");
-	      msg.setText(body, "UTF-8");
-	      msg.setSentDate(new Date());
-
-	      msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail, false));
-    	  Transport.send(msg);
-	    }
-	    catch (Exception e) {
-	      e.printStackTrace();
-	    }
+			MimeMessage msg = new MimeMessage(session);
+			msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
+			msg.addHeader("format", "flowed");
+			msg.addHeader("Content-Transfer-Encoding", "8bit");
+			msg.setFrom(new InternetAddress(mailAuth.getFromEmail(), mailAuth.getFromEmail()));
+			msg.setReplyTo(InternetAddress.parse(mailAuth.getFromEmail(), false));
+			msg.setSubject(subject, "UTF-8");
+			msg.setText(body, "UTF-8");
+			msg.setSentDate(new Date());
+			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail, false));
+			Transport.send(msg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	/**
-	 * In Development - Send SMS notifications.
-	 *
-	 * @param - int - Phone number to send message to.
-	 * @return - String - A message to send.
-	 */
-	public void sendSMS(int number, String message) {
-		//https://www.twilio.com/blog/2016/04/sending-sms-with-java.html
+	public class MailAuth {
+
+		private Scanner SCANNER = null;
+		private String fromEmail = null;
+		private String toEmail = null;
+		private String smtpServer = null;
+		private String port = null;
+		private String enableAuth = null;
+		private String enableSTARTLS = null;
+		private String username = null;
+		private String password = null;
+		private Authenticator auth = null;
+
+		public MailAuth() {
+			try {
+				SCANNER = new Scanner(new File("./src/Config/EmailConfig.txt"));
+
+				// Import Data
+				fromEmail = SCANNER.nextLine();
+				toEmail = SCANNER.nextLine();
+				smtpServer = SCANNER.nextLine();
+				port = SCANNER.nextLine();
+				enableAuth = SCANNER.nextLine();
+				enableSTARTLS = SCANNER.nextLine();
+				username = SCANNER.nextLine();
+				password = SCANNER.nextLine();
+
+				// Setup Authenticator
+				auth = new Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(username, password);
+					}
+				};
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		public String getFromEmail() {
+			return fromEmail;
+		}
+
+		public String getToEmail() {
+			return toEmail;
+		}
+
+		public String getSMTPServer() {
+			return smtpServer;
+		}
+
+		public String getPort() {
+			return port;
+		}
+
+		public String getEnableAuth() {
+			return enableAuth;
+		}
+
+		public String getEnableSTARTLS() {
+			return enableSTARTLS;
+		}
+
+		public Authenticator getAuth() {
+			return auth;
+		}
 	}
 
-	/**
-	 * Returns the email address that will be receiving email notifications.
-	 *
-	 * @return - String - Email address receiving notifications.
-	 */
-	public String getToEmail() {
-		return this.toEmail;
-	}
-
-	/**
-	 * Returns the email address that will be sending email notifications.
-	 *
-	 * @return - String - Email address sending notifications.
-	 */
-	public String getFromEmail() {
-		return this.fromEmail;
-	}
 }

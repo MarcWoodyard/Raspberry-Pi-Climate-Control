@@ -1,0 +1,3 @@
+[Servo On Position]
+[Servo Off Position]
+[Milisecond Wait Time]
