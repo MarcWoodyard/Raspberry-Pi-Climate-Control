@@ -12,18 +12,15 @@ A simple Java program that turns on or off an old push button AC unit when the r
 - Raspberry Pi
 - DHT11 Temperature & Humidity Sensor
 - Servo Motor
+- Raspberry Pi Camera
+- 5V Fan (Optional)
 - [Pi4J](http://pi4j.com/install.html) - Java I/O library for the Raspberry Pi
 
 ##### Compile & Run
 ```sh 
-clear && sudo javac -d ./bin -cp ./src:./lib/javamail/lib/*:./lib/pi4j/lib/* src/*.java
-
-sudo java -cp ./bin:./lib/javamail/lib/*:./lib/pi4j/lib/* Main [Max Temperature] [Min Temperature] [Sleep Time (Minutes)]
-```
-
-##### Compile & Run - One Command
-```sh 
-clear && sudo javac -d ./bin -cp ./src:./lib/javamail/lib/*:./lib/pi4j/lib/* src/*.java && sudo java -cp ./bin:./lib/javamail/lib/*:./lib/pi4j/lib/* Main 86 77 2
+clear
+javac -d ./bin -cp ./src/.:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* src/*.java
+sudo java -cp ./bin:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* Controller
 ```
 
 ##### Run at Startup (Optional)
@@ -39,7 +36,8 @@ clear && sudo javac -d ./bin -cp ./src:./lib/javamail/lib/*:./lib/pi4j/lib/* src
 
 https://github.com/Pi4J/pi4j/issues/319 
 
-**Solution:** 
+**Solution :** 
 ```sh 
 sudo rpi-update 52241088c1da59a359110d39c1875cda56496764
 ```
+
