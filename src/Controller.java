@@ -125,8 +125,10 @@ public class Controller {
 		this.sleep(5000.0);
 		ArrayList<String> colorArray = this.imgAnalyzer.extractColors(colorMap);
 
-		if (colorArray.contains("Green"))
-			return true;
+		for(int i = 0; i < colorArray.size(); i++) {
+			if(colorArray.get(i).contains("Green"))
+				return true;
+		}
 
 		return false;
 	}
@@ -162,8 +164,9 @@ public class Controller {
 			try {
 				a.temperatureUpdate();
 
-				// Room Too Hot ---------------------------------- 
+				// Room Too Hot ----------------------------------
 				if (a.getTemperature() >= a.getMaxTemp()) {
+					offCounter = 0;
 					log.add("[AC ON]", "Turning AC on. Temperature: " + a.getTemperature());
 					a.switchAC();
 
@@ -171,21 +174,21 @@ public class Controller {
 						a.sleep(config.getSleepTime());
 						a.temperatureUpdate();
 						log.add("[AC ON]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
-						count++;
 
-						// Verify AC Off
+						// Verify AC On
 						if (a.acStatus() == false) {
 							a.switchAC();
 							count++;
 						}
 
-						if (count >= 5) {
+						if (count >= 3) {
 							log.alert("[ERROR] Can't Turn AC On", "We're having trouble turning the AC on.");
 							count = 0;
 						}
 					} while (a.getTemperature() > a.getMinTemp());
 
-					log.add("[AC OFF]", "Turning AC off.");
+					count = 0;
+					log.add("[AC OFF]", "Turning AC off. Temperature: " + a.getTemperature());
 					a.switchAC();
 
 					log.add("[INFO]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
