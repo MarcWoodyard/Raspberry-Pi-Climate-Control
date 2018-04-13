@@ -1,3 +1,5 @@
+package utils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -133,6 +135,10 @@ public class Controller {
 		return false;
 	}
 
+	public void newServo() {
+		this.servo = new Servo();
+	}
+
 	/**
 	 * Shutdown AC Controller.
 	 */
@@ -150,72 +156,4 @@ public class Controller {
 
 		System.exit(0);
 	}
-
-	public static void main(String[] args) {
-		Logger log = new Logger();
-		ConfigImporter config = new ConfigImporter();
-		Controller a = new Controller();
-		log.alert("AC Controller Starting Up", "Your Raspberry Pi AC controller just started up.");
-
-		int count = 0;
-		int offCounter = 0;
-
-		while (true) {
-			try {
-				a.temperatureUpdate();
-
-				// Room Too Hot ----------------------------------
-				if (a.getTemperature() >= a.getMaxTemp()) {
-					offCounter = 0;
-					log.add("[AC ON]", "Turning AC on. Temperature: " + a.getTemperature());
-					a.switchAC();
-
-					do {
-						a.sleep(config.getSleepTime());
-						a.temperatureUpdate();
-						log.add("[AC ON]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
-
-						// Verify AC On
-						if (a.acStatus() == false) {
-							a.switchAC();
-							count++;
-						}
-
-						if (count >= 3) {
-							log.alert("[ERROR] Can't Turn AC On", "We're having trouble turning the AC on.");
-							count = 0;
-						}
-					} while (a.getTemperature() > a.getMinTemp());
-
-					count = 0;
-					log.add("[AC OFF]", "Turning AC off. Temperature: " + a.getTemperature());
-					a.switchAC();
-
-					log.add("[INFO]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
-					a.sleep(config.getSleepTime());
-				}
-				// -----------------------------------------------
-
-				// Verify AC Off
-				if (a.acStatus() == true) {
-					a.switchAC();
-					offCounter++;
-				}
-
-				if (offCounter >= 5) {
-					log.alert("[ERROR] Can't Turn AC Off", "We're having trouble turning the AC off.");
-					offCounter = 0;
-				}
-
-				log.add("[INFO]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
-				a.sleep(config.getSleepTime());
-
-			} catch (Exception e) {
-				log.alert("AC Controller ERROR!",
-						"An error occured while the AC Controller was running. \n\nDebug Information:\n----------------\n\n"
-								+ e.getStackTrace());
-			}
-		}
-	}
-
 }

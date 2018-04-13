@@ -24,23 +24,7 @@ public class Servo {
 	* Creates a Servo object.
 	*/
 	public Servo() {
-		// this.setupServo();
-	}
 
-	/**
-	 * Sets up & aligns the servo motor.
-	 */
-	private void setupServo() {
-		try {
-			runTime.exec("gpio mode 100 pwm");
-			runTime.exec("gpio pwm-ms");
-			runTime.exec("gpio pwmc 192");
-			runTime.exec("gpio pwmr 2000");
-			runTime.exec("gpio pwm 1 " + this.servoResting);
-		} catch (Exception e) {
-			this.log.alert("[ERROR] AC Controller Servo",
-					"The AC controller encountered a servo motor error. " + e.getMessage());
-		}
 	}
 
 	/**
@@ -48,28 +32,20 @@ public class Servo {
 	*/
 	public void switchAC() {
     try {
-	      runTime.exec("gpio pwm 1 " + this.servoResting);
-	      Thread.sleep(this.servoTimeout);
-        runTime.exec("gpio pwm 1 " + this.servoMax);
-	      Thread.sleep(this.servoTimeout);
-	      runTime.exec("gpio pwm 1 " + this.servoResting);
+			 runTime.exec("gpio mode 100 pwm");
+			 runTime.exec("gpio pwm-ms");
+			 runTime.exec("gpio pwmc 192");
+			 runTime.exec("gpio pwmr 2000");
+			 runTime.exec("gpio pwm 1 " + this.servoResting);
+			 Thread.sleep(this.servoTimeout);
+			 runTime.exec("gpio pwm 1 " + this.servoMax);
+			 Thread.sleep(this.servoTimeout);
+			 runTime.exec("gpio pwm 1 " + this.servoResting);
     } catch(Exception e) {
 			this.log.add("[ERROR]", "Exception occured: " + e.getMessage());
 			this.log.alert("AC Controller Servo Error",
 					"The AC controller encountered a servo motor error.\n\nException occured:\n" + e.getMessage());
     }
-
-		/*
-		try {
-			this.runTime.exec("gpio pwm 1 " + 50); // Turn AC On/Off.
-			Thread.sleep(this.servoTimeout); // Wait for Servo to Move.
-			this.runTime.exec("gpio pwm 1 " + 70); // Center Servo
-		} catch (Exception e) {
-			this.log.add("[ERROR]", "Exception occured: " + e.getMessage());
-			this.log.alert("AC Controller Servo Error",
-					"The AC controller encountered a servo motor error.\n\nException occured:\n" + e.getMessage());
-		}
-		*/
 
 		// Update Servo State
 		this.servoStatus = !this.servoStatus;

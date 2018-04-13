@@ -153,10 +153,18 @@ public class ConfigImporter {
     return Integer.parseInt(sleepTime);
   }
 
+  /**
+   * Returns the max temperature the room can get that will turn on the air conditioner.
+   * @return int - Max temperature that will turn on the AC.
+   */
   public int getMaxTemp() {
     return Integer.parseInt(maxTemp);
   }
 
+  /**
+   * Returns the min temperature the room can get that will turn off the air conditioner.
+   * @return int - Min temperature that will turn off the AC.
+   */
   public int getMinTemp() {
     return Integer.parseInt(minTemp);
   }
