@@ -29,6 +29,7 @@ public class Main {
 
             // Verify AC On
             if (a.acStatus() == false) {
+              log.alert("[INFO]", "Detected AC is still off?");
               a.switchAC();
               count++;
             }
@@ -46,24 +47,24 @@ public class Main {
 
           log.add("[INFO]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
           a.sleep(config.getSleepTime());
-        }
-        // -----------------------------------------------
 
-        // Verify AC Off
-        if (a.acStatus() == true) {
-          a.switchAC();
-          offCounter++;
-        }
+          // Verify AC Off
+          while(a.acStatus() == true) {
+            log.alert("[ERROR] Can't Turn AC Off", "We're having trouble turning the AC off.");
+            a.switchAC();
+            offCounter++;
+            a.sleep(config.getSleepTime());
 
-        if (offCounter >= 5) {
-          log.alert("[ERROR] Can't Turn AC Off", "We're having trouble turning the AC off.");
-          a.newServo();
-          offCounter = 0;
+            if (offCounter >= 5) {
+              log.alert("[ERROR] New Servo Created", ".");
+              a.newServo();
+              offCounter = 0;
+            }
+          }
         }
 
         log.add("[INFO]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
         a.sleep(config.getSleepTime());
-
       } catch (Exception e) {
         log.alert("AC Controller ERROR!",
             "An error occured while the AC Controller was running. \n\nDebug Information:\n----------------\n\n"

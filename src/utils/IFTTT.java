@@ -4,27 +4,25 @@ import java.io.File;
 
 import java.util.Scanner;
 
-import java.net.Socket;
-import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.cert.Certificate;
+import java.io.*;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLPeerUnverifiedException;
 
 public class IFTTT {
 
-  private static InetAddress addr;
   private static String baseWebhookURL = "";
   private static String webhookURL = "";
-  private static Socket sock;
-  private static String webhookKey = "";
+
   private IFTTTKey keyObj = new IFTTTKey();
 
   private static Logger log = new Logger();
 
   public IFTTT() {
     baseWebhookURL = "https://maker.ifttt.com/trigger/" + keyObj.getEvent() + "/with/key/" + keyObj.getKey() + "?";
-    try {
-      sock = new Socket(webhookURL, 443);
-    } catch(Exception e){
-      e.printStackTrace();
-    }
   }
 
  /**
@@ -33,12 +31,35 @@ public class IFTTT {
   */
   public void sendAlert(String alert, String data) {
     webhookURL = baseWebhookURL + alert + "=" + data;
+    URL url;
     try {
-      addr = sock.getInetAddress();
+        url = new URL(webhookURL);
+        HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
+        log.add("[INFO]", this.print_content(con));
     } catch(Exception e) {
-      log.alert("[ERROR] IFTT Webhook Connection Broken", "Couldn't connect to IFTTT webhook service. " + e.getStackTrace());
+      e.printStackTrace();
+      //log.alert("[ERROR] IFTTT Webhook Connection Broken", "Couldn't connect to IFTTT webhook service. " + e.getStackTrace());
     }
   }
+
+  private String print_content(HttpsURLConnection con){
+    String result = "";
+   if(con != null) {
+      try {
+         BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+         String input;
+
+         while ((input = br.readLine()) != null){
+            result = result + input;
+         }
+         br.close();
+
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+   }
+   return result;
+}
 
   public class IFTTTKey {
 
@@ -52,6 +73,7 @@ public class IFTTT {
         // Import Data
 				key = sc.nextLine();
 				event = sc.nextLine();
+        sc.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

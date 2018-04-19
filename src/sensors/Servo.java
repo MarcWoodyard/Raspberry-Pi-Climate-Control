@@ -28,7 +28,7 @@ public class Servo {
 	* Turns AC on/off.
 	*/
 	public void switchAC() {
-	    try {
+    try {
 			Runtime runTime = Runtime.getRuntime();
 			runTime.exec("gpio mode 1 pwm");
 			runTime.exec("gpio pwm-ms");
@@ -40,11 +40,11 @@ public class Servo {
 			Thread.sleep(this.servoTimeout);
 			runTime.exec("gpio pwm 1 " + this.servoResting); // Center
 			Thread.sleep(this.servoTimeout);
-	    } catch(Exception e) {
+    } catch(Exception e) {
 			this.log.add("[ERROR]", "Exception occured: " + e.getMessage());
 			this.log.alert("AC Controller Servo Error",
 					"The AC controller encountered a servo motor error.\n\nException occured:\n" + e.getMessage());
-	    }
+    }
 
 		// Update Servo State
 		this.servoStatus = !this.servoStatus;

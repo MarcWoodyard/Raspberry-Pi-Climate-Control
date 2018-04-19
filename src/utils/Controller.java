@@ -121,6 +121,7 @@ public class Controller {
 	 * @return Boolean - True if AC is in the on position.
 	 */
 	public boolean acStatus() {
+		System.out.println("Taking picture...");
 		this.raspStill.takePicture();
 		this.sleep(5000.0);
 		TreeMap<Integer, Integer> colorMap = this.imgAnalyzer.mapPixels(new File("image.jpg"));
@@ -128,6 +129,7 @@ public class Controller {
 		ArrayList<String> colorArray = this.imgAnalyzer.extractColors(colorMap);
 
 		for(int i = 0; i < colorArray.size(); i++) {
+			//System.out.println(colorArray.get(i));
 			if(colorArray.get(i).contains("Green"))
 				return true;
 		}
