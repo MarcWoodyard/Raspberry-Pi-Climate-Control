@@ -3,11 +3,6 @@ package sensors;
 import utils.Logger;
 import utils.ConfigImporter;
 
-import java.util.Date;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
 

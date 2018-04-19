@@ -1,7 +1,6 @@
 package utils;
 
 import java.util.Date;
-import java.util.Scanner;
 import java.util.ArrayList;
 
 import java.text.DateFormat;
@@ -21,7 +20,7 @@ public class Logger {
 	private static double errorLogSize = (double) errorLog.length() / (1024 * 1024); // Size in MB
 
 	// File Writer
-	private static FileWriter logWriter = null;
+	private FileWriter logWriter = null;
 	private static FileWriter errorWriter = null;
 
 	// Dates

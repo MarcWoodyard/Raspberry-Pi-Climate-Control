@@ -23,10 +23,6 @@ public class RaspiStill {
   private String picType = "jpg";
   private Logger log = new Logger();
 
-  public RaspiStill() {
-
-  }
-
   /**
    * Takes a picture with raspistill with default values.
    */
@@ -70,7 +66,7 @@ public class RaspiStill {
    * @param int - Picture width
    * @param int - Picture height
    */
-  public void TakePicture(String name, int width, int height) {
+  public void takePicture(String name, int width, int height) {
     this.picName = name;
     this.picWidth = width;
     this.picHeight = height;
@@ -82,7 +78,7 @@ public class RaspiStill {
    * @param String - File name (image.jpg)
    */
   public void takePicture(String name) {
-    TakePicture(name, this.picWidth, this.picHeight);
+    takePicture(name, this.picWidth, this.picHeight);
   }
 
   /**
@@ -91,6 +87,6 @@ public class RaspiStill {
    * @param int - Picture height
    */
   public void takePicture(int width, int height) {
-    TakePicture(this.picName, width, height);
+    takePicture(this.picName, width, height);
   }
 }

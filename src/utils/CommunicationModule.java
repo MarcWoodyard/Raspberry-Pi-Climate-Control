@@ -4,8 +4,8 @@ import java.io.File;
 
 public class CommunicationModule {
 
-	private static Email email = new Email();
-	private static IFTTT ifttt = null;
+	private Email email = new Email();
+	private IFTTT ifttt = null;
 
 	private static Logger log = new Logger();
 

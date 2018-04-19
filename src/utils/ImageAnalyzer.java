@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Collection;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
@@ -14,9 +13,6 @@ public class ImageAnalyzer {
 
   private static ColorUtils colorUtil = new ColorUtils();
 
-  public ImageAnalyzer() {
-
-  }
 
   /**
    * Creates a TreeMap<Color (Key), Times in Picture (Value)> and maps out the pixels in a image.
