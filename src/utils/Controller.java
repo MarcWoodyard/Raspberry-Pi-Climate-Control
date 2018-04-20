@@ -1,18 +1,15 @@
 package utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import utils.Logger;
 import utils.ImageAnalyzer;
 import utils.ConfigImporter;
-import utils.CommunicationModule;
 
 import sensors.DHT11;
 import sensors.Servo;
 import sensors.RaspiStill;
 
-import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.ArrayList;
 

@@ -21,7 +21,7 @@ public class Logger {
 
 	// File Writer
 	private FileWriter logWriter = null;
-	private static FileWriter errorWriter = null;
+	private FileWriter errorWriter = null;
 
 	// Dates
 	private static DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a MM/dd/yyyy");

@@ -1,21 +1,17 @@
 package utils;
 
+import java.io.*;
 import java.io.File;
 
 import java.util.Scanner;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.cert.Certificate;
-import java.io.*;
-
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLPeerUnverifiedException;
 
 public class IFTTT {
 
-  private static String baseWebhookURL = "";
-  private static String webhookURL = "";
+  private String baseWebhookURL = "";
+  private String webhookURL = "";
 
   private IFTTTKey keyObj = new IFTTTKey();
 
@@ -35,14 +31,14 @@ public class IFTTT {
     try {
         url = new URL(webhookURL);
         HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
-        log.add("[INFO]", this.print_content(con));
+        log.add("[INFO]", this.printContent(con));
     } catch(Exception e) {
       e.printStackTrace();
       //log.alert("[ERROR] IFTTT Webhook Connection Broken", "Couldn't connect to IFTTT webhook service. " + e.getStackTrace());
     }
   }
 
-  private String print_content(HttpsURLConnection con){
+  private String printContent(HttpsURLConnection con){
     String result = "";
    if(con != null) {
       try {

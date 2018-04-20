@@ -6,7 +6,7 @@ import utils.ConfigImporter;
 public class Servo {
 
 	// Servo Configuration
-	ConfigImporter config = new ConfigImporter();
+	private ConfigImporter config = new ConfigImporter();
 
 	// Servo Settings
 	private int servoMax = config.getSwitchButton();
@@ -17,12 +17,6 @@ public class Servo {
 	// Logging
 	private Logger log = new Logger();
 
-	/**
-	* Creates a Servo object.
-	*/
-	public Servo() {
-
-	}
 
 	/**
 	* Turns AC on/off.
