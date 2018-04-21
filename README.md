@@ -20,7 +20,7 @@ A simple Java program that turns on or off an old push button AC unit when the r
 ```sh 
 clear
 javac -d ./bin -cp ./src/.:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* src/*.java
-sudo java -cp ./bin:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* Controller
+sudo java -cp ./bin:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* Main
 ```
 
 ##### Run at Startup (Optional)
