@@ -93,26 +93,6 @@ public class Controller {
     }
 
     /**
-     * Current thread sleeps for a set period of time.
-     */
-    public void sleep(int minutes) {
-        try {
-            Thread.sleep(minutes * 60 * 1000); //Minutes to sleep * seconds to a minute * miliseconds to a second.
-        } catch (Exception e) {
-            this.log.alert("[ERROR] Controller.sleep(int)", "Exception occured: " + e.getMessage() + "\nMinutes: " + minutes);
-        }
-    }
-
-    public void sleep(Double miliseconds) {
-        try {
-            Thread.sleep(Math.round(miliseconds));
-        } catch (Exception e) {
-            this.log.alert("[ERROR] Controller.sleep(long)",
-                "Exception occured: " + e.getMessage() + "\nSeconds: " + miliseconds);
-        }
-    }
-
-    /**
      * Returns the physical state of the AC by taking a picture of the remote control
      * and anayzing the pixels for any status activity.
      * @return Boolean - True if AC is in the on position.
@@ -136,6 +116,25 @@ public class Controller {
 
     public void newServo() {
         this.servo = new Servo();
+    }
+
+    /**
+     * Current thread sleeps for a set period of time.
+     */
+    public static void sleep(int minutes) {
+        try {
+            Thread.sleep(minutes * 60 * 1000); //Minutes to sleep * seconds to a minute * miliseconds to a second.
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sleep(Double miliseconds) {
+        try {
+            Thread.sleep(Math.round(miliseconds));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

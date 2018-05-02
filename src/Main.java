@@ -3,71 +3,101 @@ import utils.Logger;
 import utils.ConfigImporter;
 
 public class Main {
+
+    static Logger log = new Logger();
+    static ConfigImporter config = new ConfigImporter();
+    static Controller a = new Controller();
+
+    static int onCounter = 0;
+    static int offCounter = 0;
+
     public static void main(String[] args) {
-        Logger log = new Logger();
-        ConfigImporter config = new ConfigImporter();
-        Controller a = new Controller();
-        log.alert("AC Controller Starting Up", "Your Raspberry Pi AC controller just started up.");
-
-        int count = 0;
-        int offCounter = 0;
-
+      log.alert("AC Controller Starting Up", "Your Raspberry Pi AC controller just started up.");
         while (true) {
             try {
                 a.temperatureUpdate();
 
-                // Room Too Hot ----------------------------------
-                if (a.getTemperature() >= a.getMaxTemp()) {
-                    offCounter = 0;
-                    log.add("[AC ON]", "Turning AC on. Temperature: " + a.getTemperature());
-                    a.switchAC();
+                if (a.getTemperature() >= a.getMaxTemp()) { // Room too hot.
+                    turnACOn();
 
                     do {
-                        a.sleep(config.getSleepTime());
-                        a.temperatureUpdate();
-                        log.add("[AC ON]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
+                        logACOn();
+                        verifyACOn();
+                    } while (a.getTemperature() > a.getMinTemp()); // Room too cold.
 
-                        // Verify AC On
-                        if (a.acStatus() == false) {
-                            a.switchAC();
-                            count++;
-                        }
-
-                        if (count > 2) {
-                            log.alert("[ERROR] Can't Turn AC On", "We're having trouble turning the AC on.");
-                            a.newServo();
-                            count = 0;
-                        }
-                    } while (a.getTemperature() > a.getMinTemp());
-
-                    count = 0;
                     log.add("[AC OFF]", "Turning AC off. Temperature: " + a.getTemperature());
                     a.switchAC();
-
-                    log.add("[INFO]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
-                    a.sleep(config.getSleepTime());
-
-                    // Verify AC Off
-                    while (a.acStatus() == true) {
-                        a.switchAC();
-                        offCounter++;
-                        a.sleep(config.getSleepTime());
-
-                        if (offCounter > 2) {
-                            log.alert("[ERROR] Can't Turn AC Off", "We're having trouble turning the AC off.");
-                            a.newServo();
-                            offCounter = 0;
-                        }
-                    }
+                    verifyACOff();
+                    logACOff();
                 }
 
-                log.add("[INFO]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
-                a.sleep(config.getSleepTime());
+                logACOff();
             } catch (Exception e) {
                 log.alert("AC Controller ERROR!",
                     "An error occured while the AC Controller was running. \n\nDebug Information:\n----------------\n\n" +
                     e.getStackTrace());
             }
         }
+    }
+
+    public static void turnACOn() {
+      log.add("[AC ON]", "Turning AC on. Temperature: " + a.getTemperature());
+      a.switchAC();
+    }
+
+    public static void verifyACOn() {
+      boolean sendResolved = false;
+      while (a.acStatus() == false) {
+          a.switchAC();
+          onCounter++;
+          a.sleep(config.getSleepTime());
+
+          if (onCounter > 2) {
+              log.alert("[ERROR] Can't Turn AC On", "We're having trouble turning the AC on.");
+              a.newServo();
+              onCounter = 0;
+              sendResolved = true;
+          }
+      }
+
+      onCounter = 0;
+      if(sendResolved == true)
+        onOffResolved();
+    }
+
+    public static void verifyACOff() {
+      boolean sendResolved = false;
+      while (a.acStatus() == true) {
+          a.switchAC();
+          offCounter++;
+          a.sleep(config.getSleepTime());
+
+          if (offCounter > 2) {
+              log.alert("[ERROR] Can't Turn AC Off", "We're having trouble turning the AC off.");
+              a.newServo();
+              offCounter = 0;
+              sendResolved = true;
+          }
+      }
+
+      offCounter = 0;
+      if(sendResolved == true)
+        onOffResolved();
+    }
+
+    public static void logACOff() {
+      log.add("[INFO]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
+      a.sleep(config.getSleepTime());
+    }
+
+    public static void logACOn() {
+      a.sleep(config.getSleepTime());
+      a.temperatureUpdate();
+      log.add("[AC ON]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
+    }
+
+    public static void onOffResolved() {
+      log.alert("[RESOLVED] AC On/Off Resolved", "We've resolved the AC on/off issue. Please"  +
+                "check the log for more details.");
     }
 }
