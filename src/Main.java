@@ -48,11 +48,17 @@ public class Main {
         }
     }
 
+    /**
+     * Logs & turns the AC on.
+     */
     public static void turnACOn() {
         log.add("[AC ON]", "Turning AC on. Temperature: " + a.getTemperature());
         a.switchAC();
     }
 
+    /**
+     * Verifies that the AC is on.
+     */
     public static void verifyACOn() {
         boolean sendResolved = false;
         while (a.acStatus() == false) {
@@ -73,6 +79,9 @@ public class Main {
             onOffResolved();
     }
 
+    /**
+     * Verifies that the AC is off.
+     */
     public static void verifyACOff() {
         boolean sendResolved = false;
         while (a.acStatus() == true) {
@@ -93,17 +102,26 @@ public class Main {
             onOffResolved();
     }
 
+    /**
+     * Logs the AC data when it is turned off.
+     */
     public static void logACOff() {
         log.add("[INFO]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
         a.sleep(config.getSleepTime());
     }
 
+    /**
+     * Logs the AC data when it is turned off.
+     */
     public static void logACOn() {
         a.sleep(config.getSleepTime() / 2);
         a.temperatureUpdate();
         log.add("[AC ON]", "Temperature: " + a.getTemperature() + " Humidity: " + (int) a.getHumidity() + "%");
     }
 
+    /**
+     * Sends an email alert to notifiy that AC issues have been resolved.
+     */
     public static void onOffResolved() {
         log.alert("[RESOLVED] AC On/Off Resolved", "We've resolved the AC on/off issue. Please" +
             "check the log for more details.");

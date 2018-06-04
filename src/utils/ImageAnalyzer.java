@@ -67,15 +67,17 @@ public class ImageAnalyzer {
      * @param Map - A map object.
      * @return String - A map's values stored in a String.
      */
-    public String mapToString(Map m) {
+    public String mapToString(Map map) {
         String result = "";
-        Iterator it = m.entrySet().iterator();
+        Iterator it = map.entrySet().iterator();
 
         while (it.hasNext()) {
-            if (result.equals(""))
+            if (result.equals("")) {
                 result = result + it.next();
-            else
+            }
+            else {
                 result = result + " " + it.next();
+            }
         }
 
         return result;

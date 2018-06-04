@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileReader;
-import java.io.BufferedReader;
 
 public class Logger {
 
@@ -30,6 +29,9 @@ public class Logger {
 	// Communication Module
 	private static CommunicationModule coms = new CommunicationModule();
 
+	/**
+	 * Creates a logger object that logs data and sends alerts.
+	 */
 	public Logger() {
 		try {
 			if (logWriter == null) {
