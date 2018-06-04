@@ -93,40 +93,24 @@ public class Logger {
 	 */
 	private void cleanLogs() {
 		try {
-			if (logSize > 5.0) {
-				BufferedReader br = new BufferedReader(new FileReader(log));
-				ArrayList<String> logEnteries = new ArrayList<>();
+			if (logSize > 5.0)
+				log = new File(deleteLog(log.getPath()));
 
-				for (int i = 0; i <= 100; i++)
-					logEnteries.add(br.readLine());
-
-				String logPath = log.getPath();
-				log.delete();
-				log = new File(logPath);
-
-				for (int j = 0; j < logEnteries.size(); j++)
-					this.add(logEnteries.get(j));
-
-				br.close();
-			} else if (errorLogSize > 5.0) {
-				BufferedReader br = new BufferedReader(new FileReader(log));
-				ArrayList<String> logEnteries = new ArrayList<>();
-
-				for (int i = 0; i <= 100; i++)
-					logEnteries.add(br.readLine());
-
-				String logPath = errorLog.getPath();
-				errorLog.delete();
-				errorLog = new File(logPath);
-
-				for (int j = 0; j < logEnteries.size(); j++)
-					this.add(logEnteries.get(j));
-
-				br.close();
-			}
+			if (errorLogSize > 5.0)
+				errorLog = new File(deleteLog(errorLog.getPath()));
+			
 		} catch (Exception e) {
-			this.alert("[ERROR] Exception in Logger.java", "An Exception Occured in Logger.java " + e);
+			this.alert("[ERROR] Exception in Logger.java", "An Exception Occured in Logger.java " + e.getMessage());
 		}
+	}
+
+	private String deleteLog(String logPath) {
+		try {
+			new File(logPath).delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return logPath;
 	}
 
 	/**

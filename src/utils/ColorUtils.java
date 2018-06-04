@@ -7,7 +7,8 @@ import java.util.ArrayList;
  * Java Code to get a color name from rgb/hex value/awt color
  *
  * The part of looking up a color name from the rgb values is edited from
- * https://gist.github.com/nightlark/6482130#file-gistfile1-java (that has some errors) by Ryan Mast (nightlark)
+ * https://gist.github.com/nightlark/6482130#file-gistfile1-java 
+ * (that has some errors) by Ryan Mast (nightlark)
  *
  * @author Xiaoxiao Li
  */
