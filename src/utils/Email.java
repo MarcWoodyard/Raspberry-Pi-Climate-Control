@@ -16,12 +16,7 @@ import javax.mail.internet.InternetAddress;
 
 public class Email {
 
-    private MailAuth mailAuth = null;
-
-    public Email() {
-        if (mailAuth == null)
-            mailAuth = new MailAuth();
-    }
+    private MailAuth mailAuth = new MailAuth();
 
     /**
      * Sends a email message.

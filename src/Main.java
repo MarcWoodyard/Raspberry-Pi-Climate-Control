@@ -4,7 +4,7 @@ import utils.ConfigImporter;
 
 public class Main {
 
-    private static final Logger log = new Logger();
+    private static Logger log = new Logger();
     private static ConfigImporter config = new ConfigImporter();
     private static Controller a = new Controller();
 

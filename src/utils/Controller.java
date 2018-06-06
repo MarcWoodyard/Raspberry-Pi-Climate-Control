@@ -2,10 +2,6 @@ package utils;
 
 import java.io.File;
 
-import utils.Logger;
-import utils.ImageAnalyzer;
-import utils.ConfigImporter;
-
 import sensors.DHT11;
 import sensors.Servo;
 import sensors.RaspiStill;

@@ -75,22 +75,6 @@ public class Logger {
 	}
 
 	/**
-	 * Add log enteries to new log file after deleting the old one.
-	 */
-	private void add(String data) {
-		try {
-			if (data.contains("[ERROR]")) {
-				errorWriter.write(data);
-				errorWriter.flush();
-			}
-			logWriter.write(data);
-			logWriter.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Cleans up old log entries.
 	 */
 	private void cleanLogs() {
