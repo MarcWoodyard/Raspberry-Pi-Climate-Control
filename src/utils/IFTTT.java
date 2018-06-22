@@ -1,6 +1,8 @@
 package utils;
 
 import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import java.util.Scanner;
 
@@ -9,8 +11,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class IFTTT {
 
-    private String baseWebhookURL = "";
-    private String webhookURL = "";
+    private static String baseWebhookURL = "";
+    private static String webhookURL = "";
 
     private IFTTTKey keyObj = new IFTTTKey();
 
@@ -49,7 +51,7 @@ public class IFTTT {
                 }
                 br.close();
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

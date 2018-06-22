@@ -2,10 +2,13 @@ package utils;
 
 import java.io.File;
 
+/**
+ * Handles email/IFTTT notifications
+ */
 public class CommunicationModule {
 
-    private Email email = new Email();
-    private IFTTT ifttt = null;
+    private static Email email = new Email();
+    private static IFTTT ifttt = null;
 
     private static Logger log = new Logger();
 
