@@ -14,17 +14,17 @@ public class DHT11 {
 	private static int pin = config.getDHT11GPIO();
 	private static final int MAXTIMINGS = 85;
 
-	// Temerature Vlaues
+	// Temerature Values
 	private double temperature;
 	private double humidity;
 
-	// Error handling
+	// Error Handling
 	private int errorCount = 0;
 	private Logger log = new Logger();
 
 	/**
-	* Creates a DHT11 object.
-	*/
+	 * Creates a DHT11 object.
+	 */
 	public DHT11() {
 		if (Gpio.wiringPiSetup() == -1) {
 			this.log.alert("[ERROR] GPIO setup failed.", "An error occured when creating a DHT11 object");
@@ -36,9 +36,9 @@ public class DHT11 {
 	}
 
 	/**
-	* Updates the temperature and humidity data from the sensor.
-	* @param int - GPIO pin sensor is connected to.
-	*/
+	 * Updates the temperature and humidity data from the sensor.
+	 * @param int - GPIO pin sensor is connected to.
+	 */
 	public void updateTemperature() {
 		do {
 			int laststate = Gpio.HIGH;
