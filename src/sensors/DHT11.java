@@ -121,30 +121,30 @@ public class DHT11 {
 			}
 		} while (this.temperature == Double.MAX_VALUE || this.humidity == Double.MAX_VALUE);
 
-		// Rest error handeling variable.
+		// Rest error handling variable.
 		this.errorCount = 0;
 	}
 
 	/**
-	* Returns the temperature from the sensor.
-	* @return Double - temperature as a double.
-	*/
+	 * Returns the temperature from the sensor.
+	 * @return Double - temperature as a double.
+	 */
 	public double getTemperature() {
 		return this.temperature;
 	}
 
 	/**
-	* Returns the humidity from the sensor.
-	* @return Double - humidity as a double.
-	*/
+	 * Returns the humidity from the sensor.
+	 * @return Double - humidity as a double.
+	 */
 	public double gethumidity() {
 		return this.humidity;
 	}
 
 	/**
-	* Returns the humidity from the sensor.
-	* @return Boolean - True of false depending of temperature data array.
-	*/
+	 * Returns the humidity from the sensor.
+	 * @return Boolean - True of false depending of temperature data array.
+	 */
 	private boolean checkParity() {
 		return dht11_dat[4] == (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3] & 0xFF);
 	}
