@@ -14,6 +14,8 @@ public class Main {
     public static void main(String[] args) {
         log.alert("AC Controller Starting Up", "Your Raspberry Pi AC controller just started up.");
         while (true) {
+        	verifyACOff();
+
             try {
                 a.temperatureUpdate();
 
@@ -64,7 +66,7 @@ public class Main {
         while (a.acStatus() == false) {
             a.switchAC();
             onCounter++;
-            a.sleep(config.getSleepTime() / 2);
+            a.sleep(10000);
 
             if (onCounter > 2) {
                 log.alert("[ERROR] Can't Turn AC On", "We're having trouble turning the AC on.");
@@ -87,7 +89,7 @@ public class Main {
         while (a.acStatus() == true) {
             a.switchAC();
             offCounter++;
-            a.sleep(config.getSleepTime() / 2);
+            a.sleep(10000);
 
             if (offCounter > 2) {
                 log.alert("[ERROR] Can't Turn AC Off", "We're having trouble turning the AC off.");

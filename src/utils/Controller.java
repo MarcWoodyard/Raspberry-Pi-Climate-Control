@@ -94,7 +94,6 @@ public class Controller {
      * @return Boolean - True if AC is in the on position.
      */
     public boolean acStatus() {
-        System.out.println("Taking picture...");
         this.raspStill.takePicture();
         this.sleep(5000.0);
         TreeMap < Integer, Integer > colorMap = this.imgAnalyzer.mapPixels(new File("image.jpg"));
