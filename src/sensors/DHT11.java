@@ -14,17 +14,17 @@ public class DHT11 {
 	private static int pin = config.getDHT11GPIO();
 	private static final int MAXTIMINGS = 85;
 
-	// Temerature Vlaues
+	// Temerature Values
 	private double temperature;
 	private double humidity;
 
-	// Error handling
+	// Error Handling
 	private int errorCount = 0;
 	private Logger log = new Logger();
 
 	/**
-	* Creates a DHT11 object.
-	*/
+	 * Creates a DHT11 object.
+	 */
 	public DHT11() {
 		if (Gpio.wiringPiSetup() == -1) {
 			this.log.alert("[ERROR] GPIO setup failed.", "An error occured when creating a DHT11 object");
@@ -36,9 +36,9 @@ public class DHT11 {
 	}
 
 	/**
-	* Updates the temperature and humidity data from the sensor.
-	* @param int - GPIO pin sensor is connected to.
-	*/
+	 * Updates the temperature and humidity data from the sensor.
+	 * @param int - GPIO pin sensor is connected to.
+	 */
 	public void updateTemperature() {
 		do {
 			int laststate = Gpio.HIGH;
@@ -121,30 +121,30 @@ public class DHT11 {
 			}
 		} while (this.temperature == Double.MAX_VALUE || this.humidity == Double.MAX_VALUE);
 
-		// Rest error handeling variable.
+		// Rest error handling variable.
 		this.errorCount = 0;
 	}
 
 	/**
-	* Returns the temperature from the sensor.
-	* @return Double - temperature as a double.
-	*/
+	 * Returns the temperature from the sensor.
+	 * @return Double - temperature as a double.
+	 */
 	public double getTemperature() {
 		return this.temperature;
 	}
 
 	/**
-	* Returns the humidity from the sensor.
-	* @return Double - humidity as a double.
-	*/
+	 * Returns the humidity from the sensor.
+	 * @return Double - humidity as a double.
+	 */
 	public double gethumidity() {
 		return this.humidity;
 	}
 
 	/**
-	* Returns the humidity from the sensor.
-	* @return Boolean - True of false depending of temperature data array.
-	*/
+	 * Returns the humidity from the sensor.
+	 * @return Boolean - True of false depending of temperature data array.
+	 */
 	private boolean checkParity() {
 		return dht11_dat[4] == (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3] & 0xFF);
 	}

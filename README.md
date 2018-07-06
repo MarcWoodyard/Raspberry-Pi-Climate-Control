@@ -2,8 +2,9 @@
 A simple Java program that turns on or off an old push button AC unit when the room reaches a certain temperature + some advanced features.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0452ea1177494b6aaaf62636ece06d0d)](https://www.codacy.com/app/MarcWoodyard/Raspberry-Pi-Climate-Control?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MarcWoodyard/Raspberry-Pi-Climate-Control&amp;utm_campaign=Badge_Grade) 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control?ref=badge_shield)
 [![Maintainability](https://api.codeclimate.com/v1/badges/05339f63607ad83ed69d/maintainability)](https://codeclimate.com/github/MarcWoodyard/Raspberry-Pi-Climate-Control/maintainability)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control?ref=badge_shield)
+
 
 <p align="center">
   <img width="460" height="300" src="https://raw.githubusercontent.com/MarcWoodyard/Raspberry-Pi-Climate-Control/master/screenshot.png">
@@ -31,7 +32,7 @@ sudo java -cp ./bin:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* Main
 
 ### Credits
 
-[Eric Smith](https://stackoverflow.com/questions/28486159/read-temperature-from-dht11-using-pi4j/34976602#34976602) - For writing most of the [DHT11.java](https://github.com/MarcWoodyard/Raspberry-Pi-Climate-Control/blob/master/src/DHT11.java) code.
+[Eric Smith](https://stackoverflow.com/questions/28486159/read-temperature-from-dht11-using-pi4j/34976602#34976602) - For writing most of the [DHT11.java](https://github.com/MarcWoodyard/Raspberry-Pi-Climate-Control/blob/master/src/sensors/DHT11.java) code.
 
 ### Troubleshooting
 
