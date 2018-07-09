@@ -1,20 +1,16 @@
 package utils;
 
-import java.util.Date;
-import java.util.ArrayList;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import java.io.File;
 import java.io.FileWriter;
-import java.io.FileReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Logger {
 
 	// Log Files
-	private static File log = new File("./src/Logs/Log.txt");
-	private static File errorLog = new File("./src/Logs/ErrorLog.txt");
+	private static File log = new File("./data/logs/Log.txt");
+	private static File errorLog = new File("./data/logs/ErrorLog.txt");
 	private static double logSize = (double) log.length() / (1024 * 1024); // Size in MB
 	private static double errorLogSize = (double) errorLog.length() / (1024 * 1024); // Size in MB
 
@@ -48,8 +44,12 @@ public class Logger {
 
 	/**
 	 * Logs a program event to a log file and outputs the data to the console.
-	 * @param String - Specifies the type of log entry ([ERROR], [INFO]).
-	 * @param String - Log data to be written to the log file and output data to console.
+	 * 
+	 * @param String
+	 *            - Specifies the type of log entry ([ERROR], [INFO]).
+	 * @param String
+	 *            - Log data to be written to the log file and output data to
+	 *            console.
 	 */
 	public void add(String type, String info) {
 		if (Integer.parseInt(day.format(new Date())) == 11 || Integer.parseInt(day.format(new Date())) == 25)
@@ -84,7 +84,7 @@ public class Logger {
 
 			if (errorLogSize > 5.0)
 				errorLog = new File(deleteLog(errorLog.getPath()));
-			
+
 		} catch (Exception e) {
 			this.alert("[ERROR] Exception in Logger.java", "An Exception Occured in Logger.java " + e.getMessage());
 		}
@@ -101,8 +101,11 @@ public class Logger {
 
 	/**
 	 * Sends an alert email.
-	 * @param String - Subject of email.
-	 * @param String - Body of email.
+	 * 
+	 * @param String
+	 *            - Subject of email.
+	 * @param String
+	 *            - Body of email.
 	 */
 	public void alert(String subject, String body) {
 		coms.sendEmail(subject, body);
