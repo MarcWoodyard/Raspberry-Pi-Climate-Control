@@ -1,3 +1,5 @@
+import java.util.Random;
+
 import utils.ConfigImporter;
 import utils.Controller;
 import utils.Logger;
@@ -7,16 +9,21 @@ public class Main {
 	private static Logger log = new Logger();
 	private static ConfigImporter config = new ConfigImporter();
 	private static Controller a = new Controller();
+	private static Random rn = new Random();
 
 	private static int onCounter = 0;
 	private static int offCounter = 0;
 
 	public static void main(String[] args) {
 		log.alert("AC Controller Starting Up", "Your Raspberry Pi AC controller just started up.");
-		while (true) {
-			verifyACOff();
+		verifyACOff();
 
+		while (true) {
 			try {
+				// Randomly check if AC is off.
+				if (rn.nextInt(10) + 1 == 7)
+					verifyACOff();
+
 				a.temperatureUpdate();
 
 				if (a.getTemperature() >= a.getMaxTemp()) { // Room too hot.
