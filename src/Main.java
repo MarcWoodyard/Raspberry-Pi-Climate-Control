@@ -26,7 +26,7 @@ public class Main {
 
 				a.temperatureUpdate();
 
-				if (a.getTemperature() >= a.getMaxTemp()) { // Room too hot.
+				if (a.getTemperature() >= a.getMaxTemp()) { // Turn on
 					turnACOn();
 					int rounds = 0;
 
@@ -39,7 +39,7 @@ public class Main {
 							log.alert("Room Temperature Not Changing", "The room is not getting colder.");
 						else if (rounds > 6)
 							rounds = 0;
-					} while (a.getTemperature() > a.getMinTemp()); // Room too cold.
+					} while (a.getTemperature() >= a.getMinTemp()); // Turn off
 					rounds = 0;
 
 					log.add("[AC OFF]", "Turning AC off. Temperature: " + a.getTemperature());
@@ -70,6 +70,7 @@ public class Main {
 	 */
 	public static void verifyACOn() {
 		boolean sendResolved = false;
+		log.add("[AC ON]", "Checking AC status.");
 		while (a.acStatus() == false) {
 			a.switchAC();
 			onCounter++;
@@ -93,6 +94,7 @@ public class Main {
 	 */
 	public static void verifyACOff() {
 		boolean sendResolved = false;
+		log.add("[AC OFF]", "Checking AC status.");
 		while (a.acStatus() == true) {
 			a.switchAC();
 			offCounter++;
