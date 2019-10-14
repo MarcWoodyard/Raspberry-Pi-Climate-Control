@@ -1,9 +1,11 @@
 # Raspberry Pi Climate Control 
-A simple Java program that turns on or off an old push button AC unit when the room reaches a certain temperature + some advanced features.
+
+A very specilized program I wrote for a client that turns an old push button AC unit on and off when the room reaches a certain temperature. It uses a DHT11 temperature sensor to detect when to room is getting too hot, and then moves the attached servo to turn the AC unit remote on. The program then takes a picture of the remote to determine if the system is running (should be in a dark box so if the system is on, the remote should have display that turns on). And when the remote is off, the lights on the remote should also be off so when the camera takes a picture, the only color in the picure is the color black. And then the whole process repeates.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0452ea1177494b6aaaf62636ece06d0d)](https://www.codacy.com/app/MarcWoodyard/Raspberry-Pi-Climate-Control?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MarcWoodyard/Raspberry-Pi-Climate-Control&amp;utm_campaign=Badge_Grade) 
 [![Maintainability](https://api.codeclimate.com/v1/badges/05339f63607ad83ed69d/maintainability)](https://codeclimate.com/github/MarcWoodyard/Raspberry-Pi-Climate-Control/maintainability)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control?ref=badge_shield)
+
 
 <p align="center">
   <img width="460" height="300" src="https://raw.githubusercontent.com/MarcWoodyard/Raspberry-Pi-Climate-Control/master/screenshot.png">
@@ -12,11 +14,10 @@ A simple Java program that turns on or off an old push button AC unit when the r
 ### Dependencies
 
 - Java
-- Raspberry Pi
+- Raspberry Pi 2 B+ or above
 - DHT11 Temperature & Humidity Sensor
 - Servo Motor
 - Raspberry Pi Camera
-- 5V Fan (Optional)
 
 ##### Run
 ```sh 
