@@ -71,9 +71,7 @@ public class RoomMonitor extends Thread {
         } else
             isRunning = true;
 
-        //log.add("[SYSTEM]", "Setting up AC Controller. Please wait...");
         log.alert("AC Controller Starting Up", "Your room temperature monitor just started up.");
-        //verifyACOn(false);
         this.sleep(5000.0);
 
         while (true) {

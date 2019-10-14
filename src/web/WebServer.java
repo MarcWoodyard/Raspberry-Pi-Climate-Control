@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
-public class WebServer implements Runnable {
+public class WebServer extends Thread {
 
     private static final boolean verbose = false;
     private static final File WEB_ROOT = new File("./html/");

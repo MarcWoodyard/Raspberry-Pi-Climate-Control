@@ -1,6 +1,5 @@
 // inspired by this shot: https://dribbble.com/shots/2783874-Exploring-Smart-Thermostat-Controls/attachments/568702
 
-
 // utilities to create SVG
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
   var angleInRadians = (angleInDegrees+135) * Math.PI / 180.0;
