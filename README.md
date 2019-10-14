@@ -17,13 +17,10 @@ A simple Java program that turns on or off an old push button AC unit when the r
 - Servo Motor
 - Raspberry Pi Camera
 - 5V Fan (Optional)
-- [Pi4J](http://pi4j.com/install.html) - Java I/O library for the Raspberry Pi
 
-##### Compile & Run
+##### Run
 ```sh 
-clear
-javac -d ./bin -cp ./src/.:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* src/*.java
-sudo java -cp ./bin:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* Main
+java -jar Raspberry-Pi-Climate-Control.jar (Verbose Logging (True/False)) (Web Server Port (8080))
 ```
 
 ##### Run at Startup (Optional)
