@@ -20,7 +20,7 @@ A very specilized program I wrote for a client that turns an old push button AC 
 
 ##### Run
 ```sh 
-java -jar Raspberry-Pi-Climate-Control.jar (Verbose Logging (True/False)) (Web Server Port (8080))
+$ java -jar Raspberry-Pi-Climate-Control.jar (Verbose Logging (True/False)) (Web Server Port (8080))
 ```
 
 ##### Run at Startup (Optional)
