@@ -1,9 +1,10 @@
 # Raspberry Pi Climate Control 
-A simple Java program that turns on or off an old push button AC unit when the room reaches a certain temperature + some advanced features.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0452ea1177494b6aaaf62636ece06d0d)](https://www.codacy.com/app/MarcWoodyard/Raspberry-Pi-Climate-Control?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MarcWoodyard/Raspberry-Pi-Climate-Control&amp;utm_campaign=Badge_Grade) 
 [![Maintainability](https://api.codeclimate.com/v1/badges/05339f63607ad83ed69d/maintainability)](https://codeclimate.com/github/MarcWoodyard/Raspberry-Pi-Climate-Control/maintainability)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control?ref=badge_shield)
+
+A very specilized program I wrote for a client that turns an old push button AC unit on and off when the room reaches a certain temperature. It uses a DHT11 temperature sensor to detect when to room is getting too hot, and then moves the attached servo to turn the AC unit remote on. The program then takes a picture of the remote to determine if the system is running (should be in a dark box so if the system is on, the remote should have display that turns on). And when the system is off, the lights on the remote should also be off so when the camera takes a picture, the only color in the picure should be the color black. And then the whole process repeates.
 
 <p align="center">
   <img width="460" height="300" src="https://raw.githubusercontent.com/MarcWoodyard/Raspberry-Pi-Climate-Control/master/screenshot.png">
@@ -12,22 +13,18 @@ A simple Java program that turns on or off an old push button AC unit when the r
 ### Dependencies
 
 - Java
-- Raspberry Pi
+- Raspberry Pi 2 B+ or above
 - DHT11 Temperature & Humidity Sensor
 - Servo Motor
 - Raspberry Pi Camera
-- 5V Fan (Optional)
-- [Pi4J](http://pi4j.com/install.html) - Java I/O library for the Raspberry Pi
 
-##### Compile & Run
+##### Run
 ```sh 
-clear
-javac -d ./bin -cp ./src/.:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* src/*.java
-sudo java -cp ./bin:./src/lib/javamail/mail.jar:./src/lib/pi4j/lib/* Main
+$ java -jar Raspberry-Pi-Climate-Control.jar (Verbose Logging (True/False)) (Web Server Port (8080))
 ```
 
 ##### Run at Startup (Optional)
-[RC.LOCAL](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md)
+Add the run command to your [RC.LOCAL](https://www.raspberrypi.org/documentation/linux/usage/rc-local.md) file. Don't forget to add a "&" after the command so it runs in the background.
 
 ### Credits
 
