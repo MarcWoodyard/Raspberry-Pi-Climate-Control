@@ -1,5 +1,7 @@
 package utils;
 
+import coms.CommunicationModule;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.text.DateFormat;
@@ -8,107 +10,82 @@ import java.util.Date;
 
 public class Logger {
 
-	// Log Files
-	private static File log = new File("./data/logs/Log.txt");
-	private static File errorLog = new File("./data/logs/ErrorLog.txt");
-	private static double logSize = (double) log.length() / (1024 * 1024); // Size in MB
-	private static double errorLogSize = (double) errorLog.length() / (1024 * 1024); // Size in MB
+    // Log Files
+    private static File log = new File("Log.txt");
+    private static File errorLog = new File("ErrorLog.txt");
+    private static double logSize = (double) log.length() / (1024 * 1024); // Size in MB
+    private static double errorLogSize = (double) errorLog.length() / (1024 * 1024); // Size in MB
 
-	// File Writer
-	private FileWriter logWriter = null;
-	private FileWriter errorWriter = null;
+    // Dates
+    private static DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a MM/dd/yyyy");
+    private static DateFormat day = new SimpleDateFormat("dd");
 
-	// Dates
-	private static DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a MM/dd/yyyy");
-	private static DateFormat day = new SimpleDateFormat("dd");
+    // Communication Module
+    private static CommunicationModule coms = new CommunicationModule();
 
-	// Communication Module
-	private static CommunicationModule coms = new CommunicationModule();
+    // File Writer
+    private static FileWriter logWriter = null;
+    private static FileWriter errorWriter = null;
 
-	/**
-	 * Creates a logger object that logs data and sends alerts.
-	 */
-	public Logger() {
-		try {
-			if (logWriter == null) {
-				logWriter = new FileWriter(log, true);
-			}
+    public Logger() {
+        try {
+            if (logWriter == null)
+                logWriter = new FileWriter(log, true);
 
-			if (errorWriter == null) {
-				errorWriter = new FileWriter(errorLog, true);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            if (errorWriter == null)
+                errorWriter = new FileWriter(errorLog, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Logs a program event to a log file and outputs the data to the console.
-	 * 
-	 * @param String
-	 *            - Specifies the type of log entry ([ERROR], [INFO]).
-	 * @param String
-	 *            - Log data to be written to the log file and output data to
-	 *            console.
-	 */
-	public void add(String type, String info) {
-		if (Integer.parseInt(day.format(new Date())) == 11 || Integer.parseInt(day.format(new Date())) == 25)
-			this.cleanLogs();
+    public void add(String type, String info) {
+        if (Integer.parseInt(day.format(new Date())) == 11 || Integer.parseInt(day.format(new Date())) == 25)
+            this.cleanLogs();
 
-		if (type.contains("[ERROR]")) {
-			try {
-				errorWriter.write("\r\n[" + dateFormat.format(new Date()) + "]" + info);
-				errorWriter.flush();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+        if (type.contains("[ERROR]")) {
+            try {
+                errorWriter.write("\r\n[" + dateFormat.format(new Date()) + "]" + info);
+                errorWriter.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-		try {
-			logWriter.write("\r\n[" + dateFormat.format(new Date()) + "]" + info);
-			logWriter.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        try {
+            logWriter.write("\r\n[" + dateFormat.format(new Date()) + "]" + info);
+            logWriter.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		System.out.println(type + " [" + dateFormat.format(new Date()) + "] " + info);
-	}
+        System.out.println(type + " [" + dateFormat.format(new Date()) + "] " + info);
+    }
 
-	/**
-	 * Cleans up old log entries.
-	 */
-	private void cleanLogs() {
-		try {
-			if (logSize > 5.0)
-				log = new File(deleteLog(log.getPath()));
+    private void cleanLogs() {
+        try {
+            if (logSize > 5.0)
+                log = new File(deleteLog(log.getPath()));
 
-			if (errorLogSize > 5.0)
-				errorLog = new File(deleteLog(errorLog.getPath()));
+            if (errorLogSize > 5.0)
+                errorLog = new File(deleteLog(errorLog.getPath()));
 
-		} catch (Exception e) {
-			this.alert("[ERROR] Exception in Logger.java", "An Exception Occured in Logger.java " + e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            this.alert("[ERROR] Exception in Logger.java", "An Exception Occured in Logger.java " + e.getMessage());
+        }
+    }
 
-	private String deleteLog(String logPath) {
-		try {
-			new File(logPath).delete();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return logPath;
-	}
+    private String deleteLog(String logPath) {
+        try {
+            new File(logPath).delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return logPath;
+    }
 
-	/**
-	 * Sends an alert email.
-	 * 
-	 * @param String
-	 *            - Subject of email.
-	 * @param String
-	 *            - Body of email.
-	 */
-	public void alert(String subject, String body) {
-		coms.sendEmail(subject, body);
-		this.add(subject, body);
-	}
+    public void alert(String subject, String body) {
+        coms.sendEmail(subject, body);
+        //this.add(subject, body);
+    }
 }

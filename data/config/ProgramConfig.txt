@@ -1,3 +1,0 @@
-[Wait Time]
-[Max Temperature]
-[Min Temperature]

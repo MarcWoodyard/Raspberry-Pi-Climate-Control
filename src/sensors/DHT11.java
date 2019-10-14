@@ -1,151 +1,132 @@
 package sensors;
 
-import utils.Logger;
-import utils.ConfigImporter;
-
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
+import utils.Logger;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class DHT11 {
+    private static final int MAXTIMINGS = 85;
+    private final int[] dht11_dat = {0, 0, 0, 0, 0};
+    private int pin = 0;
+    private Logger log = new Logger();
 
-	// GPIO Stuff
-	private static ConfigImporter config = new ConfigImporter();
-	private final int[] dht11_dat = { 0, 0, 0, 0, 0 };
-	private static int pin = config.getDHT11GPIO();
-	private static final int MAXTIMINGS = 85;
+    private double temperature;
+    private double humidity;
 
-	// Temerature Values
-	private double temperature;
-	private double humidity;
+    public DHT11() {
+        // Import settings the first time object created.
+        if (pin == 0) {
+            try {
+                Scanner sc = new Scanner(new File("DHT11.ini"));
+                this.pin = Integer.parseInt(sc.nextLine());
+            } catch (FileNotFoundException fnf) {
+                System.out.println("[ERROR] DHT11.ini not found");
+                System.exit(0);
+            }
+        }
 
-	// Error Handling
-	private int errorCount = 0;
-	private Logger log = new Logger();
+        if (Gpio.wiringPiSetup() == -1) {
+            this.log.alert("[ERROR] GPIO setup failed.", "An error occurred when creating a DHT11 object");
+            this.log.add("[ERROR]", "GPIO setup failed.");
+            return;
+        }
 
-	/**
-	 * Creates a DHT11 object.
-	 */
-	public DHT11() {
-		if (Gpio.wiringPiSetup() == -1) {
-			this.log.alert("[ERROR] GPIO setup failed.", "An error occured when creating a DHT11 object");
-			this.log.add("[ERROR]", "GPIO setup failed.");
-			return;
-		}
+        GpioUtil.export(3, GpioUtil.DIRECTION_OUT);
+    }
 
-		GpioUtil.export(3, GpioUtil.DIRECTION_OUT);
-	}
+    public void readSensor() {
+        int laststate = Gpio.HIGH;
+        int j = 0;
+        dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
 
-	/**
-	 * Updates the temperature and humidity data from the sensor.
-	 * @param int - GPIO pin sensor is connected to.
-	 */
-	public void updateTemperature() {
-		do {
-			int laststate = Gpio.HIGH;
-			int j = 0;
-			dht11_dat[0] = dht11_dat[1] = dht11_dat[2] = dht11_dat[3] = dht11_dat[4] = 0;
+        Gpio.pinMode(this.pin, Gpio.OUTPUT);
+        Gpio.digitalWrite(this.pin, Gpio.LOW);
+        Gpio.delay(18);
 
-			Gpio.pinMode(pin, Gpio.OUTPUT);
-			Gpio.digitalWrite(pin, Gpio.LOW);
-			Gpio.delay(18);
+        Gpio.digitalWrite(this.pin, Gpio.HIGH);
+        Gpio.pinMode(this.pin, Gpio.INPUT);
 
-			Gpio.digitalWrite(pin, Gpio.HIGH);
-			Gpio.pinMode(pin, Gpio.INPUT);
+        for (int i = 0; i < MAXTIMINGS; i++) {
+            int counter = 0;
+            while (Gpio.digitalRead(this.pin) == laststate) {
+                counter++;
+                Gpio.delayMicroseconds(1);
+                if (counter == 255) {
+                    break;
+                }
+            }
 
-			for (int i = 0; i < MAXTIMINGS; i++) {
-				int counter = 0;
+            laststate = Gpio.digitalRead(this.pin);
 
-				while (Gpio.digitalRead(pin) == laststate) {
-					counter++;
-					Gpio.delayMicroseconds(1);
-					if (counter == 255) {
-						break;
-					}
-				}
+            if (counter == 255) {
+                break;
+            }
 
-				laststate = Gpio.digitalRead(pin);
+            try {
+                /* ignore first 3 transitions */
+                if (i >= 4 && i % 2 == 0) {
+                    /* shove each bit into the storage bytes */
+                    dht11_dat[j / 8] <<= 1;
+                    if (counter > 16) {
+                        dht11_dat[j / 8] |= 1;
+                    }
+                    j++;
+                }
+            } catch (Exception e) {
+                log.add("[ERROR]", "Error reading temperature from GPIO pins.");
 
-				if (counter == 255) {
-					break;
-				}
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception f) {
+                    e.printStackTrace();
+                }
 
-				try {
-					//Ignore first 3 transitions.
-					if (i >= 4 && i % 2 == 0) {
-						dht11_dat[j / 8] <<= 1; //Shove each bit into the storage bytes.
+                this.readSensor();
+            }
+        }
+        // check we read 40 bits (8bit x 5 ) + verify checksum in the last
+        // byte
+        if (j >= 40 && checkParity()) {
+            float h = (float) ((dht11_dat[0] << 8) + dht11_dat[1]) / 10;
+            if (h > 100) {
+                h = dht11_dat[0]; // for DHT11
+            }
+            float c = (float) (((dht11_dat[2] & 0x7F) << 8) + dht11_dat[3]) / 10;
+            if (c > 125) {
+                c = dht11_dat[2]; // for DHT11
+            }
+            if ((dht11_dat[2] & 0x80) != 0) {
+                c = -c;
+            }
 
-						if (counter > 16)
-							dht11_dat[j / 8] |= 1;
+            //final float f = c * 1.8f + 32;
 
-						j++;
-					}
-				} catch (Exception e) {
-					// Send alert email only one time so we don't get flagged as spam.
-					if (this.errorCount == 0)
-						this.log.alert("[ERROR] DHT11 Exception",
-								"An error occured when getting data from the DHT11 tempetemperature sensor. " + e.getMessage());
+            this.temperature = c * 1.8f + 32;
+            this.humidity = h;
+        } else {
+            try {
+                Thread.sleep(1000);
+                this.readSensor();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-					this.errorCount++;
+    private boolean checkParity() {
+        return dht11_dat[4] == (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3] & 0xFF);
+    }
 
-					if (this.errorCount > 3)
-						break;
+    public double getTemperature() {
+        return this.temperature;
+    }
 
-					this.updateTemperature();
-				}
-			}
+    public double getHumidity() {
+        return this.humidity;
+    }
 
-			// check we read 40 bits (8bit x 5 ) + verify checksum in the last byte.
-			if (j >= 40 && checkParity()) {
-				float h = (float) ((dht11_dat[0] << 8) + dht11_dat[1]) / 10;
-
-				if (h > 100) {
-					h = dht11_dat[0]; // for DHT11
-				}
-
-				float c = (float) (((dht11_dat[2] & 0x7F) << 8) + dht11_dat[3]) / 10;
-
-				if (c > 125) {
-					c = dht11_dat[2]; // for DHT11
-				}
-
-				if ((dht11_dat[2] & 0x80) != 0) {
-					c = -c;
-				}
-
-				final float f = c * 1.8f + 32;
-				this.temperature = f;
-				this.humidity = h;
-			} else {
-				this.temperature = Double.MAX_VALUE;
-				this.humidity = Double.MAX_VALUE;
-			}
-		} while (this.temperature == Double.MAX_VALUE || this.humidity == Double.MAX_VALUE);
-
-		// Rest error handling variable.
-		this.errorCount = 0;
-	}
-
-	/**
-	 * Returns the temperature from the sensor.
-	 * @return Double - temperature as a double.
-	 */
-	public double getTemperature() {
-		return this.temperature;
-	}
-
-	/**
-	 * Returns the humidity from the sensor.
-	 * @return Double - humidity as a double.
-	 */
-	public double gethumidity() {
-		return this.humidity;
-	}
-
-	/**
-	 * Returns the humidity from the sensor.
-	 * @return Boolean - True of false depending of temperature data array.
-	 */
-	private boolean checkParity() {
-		return dht11_dat[4] == (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3] & 0xFF);
-	}
 }

@@ -1,23 +1,23 @@
 package utils;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
  * Java Code to get a color name from rgb/hex value/awt color
- *
+ * <p>
  * The part of looking up a color name from the rgb values is edited from
- * https://gist.github.com/nightlark/6482130#file-gistfile1-java 
+ * https://gist.github.com/nightlark/6482130#file-gistfile1-java
  * (that has some errors) by Ryan Mast (nightlark)
  *
  * @author Xiaoxiao Li
  */
 public class ColorUtils {
 
-    private static ArrayList < ColorName > colorList = new ArrayList < ColorName > ();
+    private static ArrayList<ColorName> colorList = new ArrayList<>();
 
-    public ColorUtils() {
-        if (colorList.isEmpty() == true)
+    ColorUtils() {
+        if (colorList.isEmpty())
             this.initColorList();
     }
 
@@ -169,9 +169,10 @@ public class ColorUtils {
 
     /**
      * Get the closest color name from our list
-     * @param Int - Red value.
-     * @param Int - Green value.
-     * @param Int - Blue value.
+     *
+     * @param r - Int - Red value.
+     * @param g - Int - Green value.
+     * @param b - Int - Blue value.
      * @return String - Color name.
      */
     public String getColorNameFromRgb(int r, int g, int b) {
@@ -179,7 +180,7 @@ public class ColorUtils {
         int minMSE = Integer.MAX_VALUE;
         int mse;
 
-        for (ColorName c: colorList) {
+        for (ColorName c : colorList) {
             mse = c.computeMSE(r, g, b);
 
             if (mse < minMSE) {
@@ -197,7 +198,8 @@ public class ColorUtils {
 
     /**
      * Convert hexColor to rgb, then call getColorNameFromRgb(r, g, b)
-     * @param Int - hexColor
+     *
+     * @param hexColor - Int - hexColor
      * @return String
      */
     public String getColorNameFromHex(int hexColor) {
@@ -217,36 +219,37 @@ public class ColorUtils {
 
     /**
      * SubClass of ColorUtils. In order to lookup color name
+     *
      * @author Xiaoxiao Li
      */
-    public class ColorName {
-        public int r, g, b;
-        public String name;
+    private static class ColorName {
+        private int r, g, b;
+        private String name;
 
-        public ColorName(String name, int r, int g, int b) {
+        private ColorName(String name, int r, int g, int b) {
             this.r = r;
             this.g = g;
             this.b = b;
             this.name = name;
         }
 
-        public int computeMSE(int pixR, int pixG, int pixB) {
-            return (int)(((pixR - r) * (pixR - r) + (pixG - g) * (pixG - g) + (pixB - b) * (pixB - b)) / 3);
+        private int computeMSE(int pixR, int pixG, int pixB) {
+            return (int) (((pixR - r) * (pixR - r) + (pixG - g) * (pixG - g) + (pixB - b) * (pixB - b)) / 3);
         }
 
-        public int getR() {
+        private int getR() {
             return r;
         }
 
-        public int getG() {
+        private int getG() {
             return g;
         }
 
-        public int getB() {
+        private int getB() {
             return b;
         }
 
-        public String getName() {
+        private String getName() {
             return name;
         }
     }

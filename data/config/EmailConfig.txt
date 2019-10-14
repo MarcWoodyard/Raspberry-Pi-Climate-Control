@@ -1,8 +1,0 @@
-[From Email Address]
-[To Email Address]
-[SMTP Server]
-[Port]
-[Enable Authentication]
-[Enable STARTLS]
-[Username]
-[Password]
