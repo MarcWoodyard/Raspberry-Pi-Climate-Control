@@ -15,6 +15,5 @@ hs_err_pid*
 
 bin/*
 out/*
-
 .idea/*
 src/META-INF/*
