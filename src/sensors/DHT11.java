@@ -18,15 +18,16 @@ public class DHT11 {
     private double humidity;
 
     public DHT11() {
-        // Import settings the first time object created.
-        if (pin == 0) {
-            try {
-                Scanner sc = new Scanner(new File("DHT11.ini"));
-                this.pin = Integer.parseInt(sc.nextLine());
-            } catch (FileNotFoundException fnf) {
-                System.out.println("[ERROR] DHT11.ini not found");
-                System.exit(0);
-            }
+        try {
+            Scanner sc = new Scanner(new File("DHT11.ini"));
+            this.pin = Integer.parseInt(sc.nextLine());
+        } catch (FileNotFoundException fnf) {
+            System.out.println("[ERROR] DHT11.ini not found");
+            System.exit(0);
+        } catch (Exception e) {
+            System.out.println("[ERROR] " + e.getMessage());
+            e.printStackTrace();
+            System.exit(0);
         }
 
         if (Gpio.wiringPiSetup() == -1) {

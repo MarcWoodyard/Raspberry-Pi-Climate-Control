@@ -8,8 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="pi4j-1.2" level="project" />
-    <orderEntry type="library" name="javax.mail" level="project" />
-    <orderEntry type="library" name="javax.mail.1.4.4" level="project" />
     <orderEntry type="library" name="activation-1.1.1" level="project" />
+    <orderEntry type="library" name="javamail.1.4" level="project" />
   </component>
 </module>

@@ -52,7 +52,8 @@
                 <!--<div class="label-value">70<span>°</span></div>-->
                 <!--<div class="label-center">[M]</div>-->
                 <div class="label-value">
-                    <embed id="temp" src="api/temperature-formatted" style="width: 1.3em; height: 1.3em; position: relative;">
+                    <embed id="temp" src="api/temperature-formatted"
+                           style="width: 1.3em; height: 1.3em; position: relative;">
                     <span>°</span></div>
                 <div class="label-value">
                     <embed src="api/mode-formatted" style="width: 1.3em; height: 1.3em; position: relative;">
@@ -93,6 +94,10 @@ function refresh() {
     embed.reload(true);
 }
 setTimeout('refresh()', 3000);
+
+
+
+
 </script>
 
 </body>
