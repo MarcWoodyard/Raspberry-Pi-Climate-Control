@@ -54,19 +54,13 @@ public class ProgramSettings {
     public String getPowerConsumption() {
         // (Watts * Hours / Day) / 1000 watts/ 1 kilowatt) * 30 Days
         double result = (powerConsumption * (roomMonitor.getMinutesRunning() / 60.0) / 1000.0) * 30.0;
-
-        if (result < 0.1)
-            return "--";
-
-        return result + "";
+        return String.format("%.1f", result);
     }
 
     public String getPowerPrice() {
-        if (this.getPowerConsumption().equals("--"))
-            return "--";
-
         // Cost = ((KWH per Month) * (Price per KWH) / 100 cent per $)
-        return (Double.parseDouble(this.getPowerConsumption()) * pricePerKWH / 100) + "";
+        double result = Double.parseDouble(this.getPowerConsumption()) * pricePerKWH / 100;
+        return String.format("%.1f", result);
     }
 
 }

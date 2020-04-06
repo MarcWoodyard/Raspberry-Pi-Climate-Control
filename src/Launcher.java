@@ -22,7 +22,7 @@ public class Launcher {
 
                     System.out.println("[TEST] Testing temperature sensor...");
                     DHT11 dht11 = new DHT11();
-                    dht11.readSensor();
+                    dht11.updateData();
                     System.out.println(dht11.getTemperature());
 
                     System.out.println("[TEST] Testing camera...");

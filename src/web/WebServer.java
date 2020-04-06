@@ -82,7 +82,6 @@ public class WebServer extends Thread {
 
     private void fileNotFound(PrintWriter out, OutputStream dataOut, String fileRequested) throws IOException {
         // TODO Instead of inline css, link css file?
-        // TODO Auto refresh temperature, mode, and power consumption in index.html
         switch (fileRequested) {
             case "/api/temperature-formatted":
                 this.sendResponse(out, (BufferedOutputStream) dataOut, "<div style=\"color: white;font-size: 6.7em;font-family: Lato, sans-serif;\">" + (int) settings.getTemperature() + "</div>");
@@ -110,7 +109,7 @@ public class WebServer extends Thread {
         byte[] fileData = this.readFileData(file, fileLength);
 
         out.println(response);
-        out.println("Server: Java HTTP Server from Saurel : 1.0");
+        out.println("Server: Java HTTP Server: 1.0");
         out.println("Date: " + new Date());
         out.println("Content-type: " + this.getContentType(file.getPath()));
         out.println("Content-length: " + fileLength);
@@ -123,7 +122,7 @@ public class WebServer extends Thread {
 
     private void sendResponse(PrintWriter out, BufferedOutputStream dataOut, String data) throws IOException {
         out.println("HTTP/1.1 200 OK");
-        out.println("Server: Java HTTP Server from Saurel : 1.0");
+        out.println("Server: Java HTTP Server: 1.0");
         out.println("Date: " + new Date());
         out.println("Content-type: " + "text/html");
         out.println("Content-length: " + data.length());

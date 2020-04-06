@@ -29,7 +29,7 @@ public class WebThread extends Thread {
                 WebServer myServer = new WebServer(serverConnect.accept());
 
                 if (verbose)
-                    System.out.println("Connecton opened. (" + new Date() + ")");
+                    System.out.println("Connection opened. (" + new Date() + ")");
 
                 // Create dedicated thread to manage the client connection
                 Thread thread = new Thread(myServer);

@@ -6,6 +6,7 @@ body {
   height: 100%;
   margin: 0;
   font-family: "Source Sans Pro", sans-serif;
+  background-image: linear-gradient(to bottom right, #056eee, #2f84ec);
 }
 
 .container {
@@ -15,7 +16,7 @@ body {
   height: auto;
   justify-content: center;
   flex-wrap: wrap;
-  background-image: linear-gradient(to bottom right, #f1f1f1, #d6d6d6);
+  top: 5%;
 }
 
 .mockup {
@@ -25,7 +26,7 @@ body {
   margin: auto;
   width: 450px;
   height: 800px;
-  margin: 5vw;
+  /*margin: 5vw;*/
   overflow: hidden;
   box-shadow: 0px 35px 100px -35px rgba(0, 0, 0, 0.4);
 }
@@ -277,6 +278,7 @@ svg.circle {
   position: relative;
   color: #fff;
   font-family: Lato, sans-serif;
+  top: -0.3em;
 }
 .label-center-container .label-value span {
   font-size: .5em;

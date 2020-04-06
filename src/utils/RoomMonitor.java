@@ -72,14 +72,19 @@ public class RoomMonitor extends Thread {
             isRunning = true;
 
         log.alert("AC Controller Starting Up", "Your room temperature monitor just started up.");
-        this.sleep(5000.0);
+
+        // Verify ac status is off before we start monitoring the room.
+        if(this.acStatus())
+            verifyACOn(false);
 
         while (true) {
             try {
+                System.out.println("Getting temperature update...");
                 this.temperatureUpdate();
+                System.out.println("Done with temperature update");
 
                 if (this.getTemperature() >= this.getMaxTemp()) { // Turn on
-                    log.add("[AC ON]", "Turning AC on. Temperature: " + this.getTemperature());
+                    log.add("[AC ON]", "Turning AC on. Temperature: " + String.format("%.2f", this.getTemperature()));
                     servo.switchAC();
 
                     int rounds = 0;
@@ -89,7 +94,7 @@ public class RoomMonitor extends Thread {
                         minutesRunning += waitTime;
                         this.sleep((int) waitTime);
                         this.temperatureUpdate();
-                        log.add("[AC ON]", "Temperature: " + (int) this.getTemperature() + "°F Humidity: " + (int) this.getHumidity() + "%");
+                        log.add("[AC ON]", "Temperature: " + String.format("%.2f", this.getTemperature()) + "°F Humidity: " + String.format("%.2f", this.getHumidity()) + "%");
                         rounds++;
 
                         if (rounds == 6)
@@ -98,12 +103,13 @@ public class RoomMonitor extends Thread {
                             rounds = 0;
                     } while (this.getTemperature() >= this.getMinTemp()); // Turn off
 
-                    log.add("[AC OFF]", "Turning AC off. Temperature: " + this.getTemperature());
+                    log.add("[AC OFF]", "Turning AC off. Temperature: " + String.format("%.2f", this.getTemperature()));
                     servo.switchAC();
                     verifyACOn(false);
                 }
 
                 logACOff();
+                System.out.println("Sleeping...");
                 this.sleep((int) waitTime);
             } catch (Exception e) {
                 log.alert("AC Controller ERROR!",
@@ -146,7 +152,7 @@ public class RoomMonitor extends Thread {
     }
 
     private void logACOff() {
-        log.add("[INFO]", "Temperature: " + (int) this.getTemperature() + "°F Humidity: " + (int) this.getHumidity() + "%");
+        log.add("[INFO]", "Temperature: " + String.format("%.2f", this.getTemperature()) + "°F Humidity: " + String.format("%.2f", this.getHumidity()) + "%");
         this.sleep(waitTime);
     }
 
@@ -168,7 +174,7 @@ public class RoomMonitor extends Thread {
     }
 
     private void temperatureUpdate() {
-        tempSensor.readSensor();
+        tempSensor.updateData();
         curTemp = tempSensor.getTemperature();
         curHumidity = tempSensor.getHumidity();
     }
