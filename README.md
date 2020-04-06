@@ -7,7 +7,7 @@
 A very specilized program I wrote for a client that turns an old push button AC unit on and off when the room reaches a certain temperature. It uses a DHT11 temperature sensor to detect when to room is getting too hot, and then moves the attached servo to turn the AC unit remote on. The program then takes a picture of the remote to determine if the system is running (should be in a dark box so if the system is on, the remote should have display that turns on). And when the system is off, the lights on the remote should also be off so when the camera takes a picture, the only color in the picure should be the color black. And then the whole process repeates.
 
 <p align="center">
-  <img width="460" height="300" src="https://raw.githubusercontent.com/MarcWoodyard/Raspberry-Pi-Climate-Control/master/screenshot.png">
+  <img src="https://raw.githubusercontent.com/MarcWoodyard/Raspberry-Pi-Climate-Control/master/screenshot.png">
 </p>
 
 ### Dependencies
@@ -20,7 +20,7 @@ A very specilized program I wrote for a client that turns an old push button AC 
 
 ##### Run
 ```sh 
-$ java -jar Raspberry-Pi-Climate-Control.jar (Verbose Logging (True/False)) (Web Server Port (8080))
+$ java -jar Raspberry-Pi-Climate-Control.jar (Verbose Logging (True/False)) (Web Server Port (8080) (Test Sensors (True/False)))
 ```
 
 ##### Run at Startup (Optional)
