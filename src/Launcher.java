@@ -41,16 +41,15 @@ public class Launcher {
             a.setPort(port);
             System.out.println("Done!");
 
-            System.out.print("[INFO] Starting monitoring thread...");
-            RoomMonitor roomMonitor = new RoomMonitor();
-            roomMonitor.start();
-            System.out.println("Done!");
-
             System.out.print("[INFO] Starting web interface...");
             WebThread webInterface = new WebThread();
             webInterface.start();
             System.out.println("Done!");
 
+            //System.out.print("[INFO] Monitoring process started.");
+            System.out.println("[INFO] Monitoring process started.");
+            RoomMonitor roomMonitor = new RoomMonitor();
+            roomMonitor.run();
         } catch (ArrayIndexOutOfBoundsException a) {
             System.out.println("Command line arguments not specified. (boolean) Verbose Logging (int) Web server Port (boolean) Test servo");
             System.exit(0);

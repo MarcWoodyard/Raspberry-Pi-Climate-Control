@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class RoomMonitor extends Thread {
+public class RoomMonitor /*extends Thread*/ {
 
     private static Logger log = new Logger();
 
@@ -63,7 +63,7 @@ public class RoomMonitor extends Thread {
             this.setupMinutesRunningReset();
     }
 
-    @Override
+    //@Override
     public void run() {
         if (isRunning) {
             log.add("[ERROR]", "Cannot create another RoomMonitor thread, one is already running.");
