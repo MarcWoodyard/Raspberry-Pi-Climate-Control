@@ -125,10 +125,11 @@ public class RoomMonitor /*extends Thread*/ {
 
         if (status)
             log.add("[AC ON]", "Checking status...");
-        else if (!status)
+        else
             log.add("[AC OFF]", "Checking status...");
 
-        do {
+        while(this.acStatus() != status) {
+            System.out.println("In while loop");
             servo.switchAC();
             errorCount++;
             this.sleep(2);
@@ -143,12 +144,15 @@ public class RoomMonitor /*extends Thread*/ {
                 errorCount = 0;
                 sendResolved = true; // When we get out of this loop, send resolved email.
             }
-        } while (this.acStatus() == status);
+        }
 
         if (sendResolved)
             onOffResolved();
 
-        log.add("[AC OFF]", "AC status = off.");
+        if (status)
+            log.add("[AC ON]", "AC status = ON.");
+        else
+            log.add("[AC OFF]", "AC status = OFF.");
     }
 
     private void logACOff() {
@@ -215,7 +219,10 @@ public class RoomMonitor /*extends Thread*/ {
 
         // Convert everything to lowercase to make sure it matches what's in RaspstillConfig.ini
         for (String s : colorArray) {
-            if (s.toLowerCase().equalsIgnoreCase(onColor))
+
+            System.out.println(s + " " + onColor);
+
+            if (s.toLowerCase().contains(onColor.toLowerCase()))
                 return true;
         }
 
