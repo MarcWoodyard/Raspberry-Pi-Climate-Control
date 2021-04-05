@@ -4,7 +4,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/05339f63607ad83ed69d/maintainability)](https://codeclimate.com/github/MarcWoodyard/Raspberry-Pi-Climate-Control/maintainability)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMarcWoodyard%2FRaspberry-Pi-Climate-Control?ref=badge_shield)
 
-A very specilized program I wrote for a client that turns an old push button AC unit on and off when the room reaches a certain temperature. It uses a DHT11 temperature sensor to detect when to room is getting too hot, and then moves the attached servo to turn the AC unit remote on. The program then takes a picture of the remote to determine if the system is running (should be in a dark box so if the system is on, the remote should have display that turns on). And when the system is off, the lights on the remote should also be off so when the camera takes a picture, the only color in the picure should be the color black. And then the whole process repeates.
+A Raspberry Pi Thermostat that turns an old push button air conditioner into a smart Thermostat. It uses a DHT11 sensor to measure the temperature and a relay module to send signals to the AC controller. Management is done through the web interface where you can see & change the temperature or enable email alerts.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/MarcWoodyard/Raspberry-Pi-Climate-Control/master/screenshot.png">
