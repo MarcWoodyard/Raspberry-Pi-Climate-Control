@@ -15,12 +15,12 @@ A very specilized program I wrote for a client that turns an old push button AC 
 - Java
 - Raspberry Pi 2 B+ or above
 - DHT11 Temperature & Humidity Sensor
-- Servo Motor
+- Relay Module
 - Raspberry Pi Camera
 
 ##### Run
 ```sh 
-$ java -jar Raspberry-Pi-Climate-Control.jar (Verbose Logging (True/False)) (Web Server Port (8080) (Test Sensors (True/False)))
+$ java -jar Raspberry-Pi-Climate-Control.jar (Web Server Port (Default: 8443))
 ```
 
 ##### Run at Startup (Optional)
