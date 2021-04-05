@@ -1,0 +1,254 @@
+body {
+    background-color: #111111;
+    font-family: sans-serif;
+    padding: 2em;
+}
+
+@media screen and (min-width: 40em) {
+    body {
+        font-size: 1.25em;
+    }
+}
+
+a {
+    text-decoration: none;
+}
+
+textarea {
+    width: -webkit-fill-available;
+    background: inherit;
+    height: 20em;
+    margin: 1em;
+    /*border: none;*/
+}
+
+.fullwidth {
+    width: 100%;
+}
+
+.form .button,
+.form .textarea,
+.form .text-input,
+.form .label {
+    padding: 0.75em 1em;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+    line-height: normal;
+    border-radius: 0;
+    border: none;
+    background: none;
+    display: block;
+}
+
+.form .label {
+    font-weight: bold;
+    color: white;
+    padding-top: 0;
+    padding-left: 0;
+    letter-spacing: 0.025em;
+    font-size: 1.125em;
+    line-height: 1.25;
+    position: relative;
+    z-index: 100;
+}
+
+.form .textarea,
+.form .text-input {
+    font: inherit;
+    line-height: normal;
+    width: 100%;
+    box-sizing: border-box;
+    background: #222222;
+    color: white;
+    position: relative;
+}
+
+.form .textarea:-webkit-autofill,
+.form .text-input:-webkit-autofill {
+    box-shadow: 0 0 0px 1000px #111111 inset;
+    -webkit-text-fill-color: white;
+    border-top-color: #111111;
+    border-left-color: #111111;
+    border-right-color: #111111;
+}
+
+.form .textarea:not(:focus):not(:active).error,
+.form .text-input:not(:focus):not(:active).error,
+.error .form .textarea:not(:focus):not(:active),
+.form .error .textarea:not(:focus):not(:active),
+.error .form .text-input:not(:focus):not(:active),
+.form .error .text-input:not(:focus):not(:active),
+.error .form .form .error {
+    background-size: 8px 8px;
+    background-image: linear-gradient(135deg, rgba(232, 71, 76, 0.5), rgba(232, 71, 76, 0.5) 25%, transparent 25%, transparent 50%, rgba(232, 71, 76, 0.5) 50%, rgba(232, 71, 76, 0.5) 75%, transparent 75%, transparent);
+    background-repeat: repeat;
+}
+
+.form .button {
+    font: inherit;
+    background: #143e71;
+    cursor: pointer;
+    color: white;
+    margin-left: auto;
+    font-weight: bold;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+.form {
+    max-width: 40em;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.form .field {
+    width: 100%;
+    margin: 0 0 1.5em 0;
+}
+
+@media screen and (min-width: 40em) {
+    .form .field.half {
+        width: calc(50% - 1px);
+    }
+}
+
+.accordion {
+    background-color: #191919;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+}
+
+.active,
+.accordion:hover {
+    background-color: #222;
+}
+
+.accordion:after {
+    content: "\002B";
+    color: #777;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.active:after {
+    content: "\2212";
+}
+
+.panel {
+    padding: 0 18px;
+    background-color: #171717;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    width: 100%;
+}
+
+.temperature,
+.humidity {
+    font-size: 3.5em !important;
+    padding: 0 !important;
+    left: 25%;
+}
+
+.title {
+    color: rgb(255 255 255 / 50%) !important;
+}
+
+.subtext {
+    font-weight: normal !important;
+    color: rgb(255 255 255 / 25%) !important;
+    padding: 0px !important;
+    font-size: 0.65em !important;
+}
+
+.button-login {
+    width: 100%;
+    background: #191919 !important;
+    color: rgb(255 255 255 / 50%) !important;
+    text-align: center;
+    padding-left: 0em !important;
+}
+
+.topLabelPadding {
+    padding-top: 1em;
+}
+
+.option-input,
+.checkbox-input {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.form .option-input + label,
+.form .checkbox-input + label {
+  display: inline-block;
+  width: auto;
+  color: #4e4e4e;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.option-input:checked + label,
+.checkbox-input:checked + label {
+  color: white;
+}
+
+.checkboxes,
+.options {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  overflow: hidden;
+}
+
+.checkbox,
+.option {
+  float: left;
+  margin: 1px;
+}
+
+.option-input + label,
+.checkbox-input + label {
+  padding: 0.75em 1em;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  line-height: normal;
+  border-radius: 0;
+  border: none;
+  background: none;
+  display: block;
+  font: inherit;
+  line-height: normal;
+  width: 100%;
+  box-sizing: border-box;
+  background: #222222;
+  color: white;
+  position: relative;
+}

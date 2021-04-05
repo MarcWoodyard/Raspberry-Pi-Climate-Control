@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home | Thermostat</title>
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+
+<body>
+<form class='form'>
+    <p class='field half'>
+        <label class='label title'>Temperature:</label>
+        <label class='label temperature' th:text="${temperature + ' °F' }"></label>
+    </p>
+
+    <p class='field half'>
+        <label class='label title'>Humidity:</label>
+        <label class='label humidity' th:text="${humidity + ' %' }"></label>
+    </p>
+
+    <p class='field'>
+        <label class='label title' th:text="${'Status: ' + mode}"></label>
+        <label class='label subtext'>Updated 1 minute ago.</label>
+    </p>
+
+    <p class='field'>
+        <a class="button button-login" href="./dashboard">Login</a>
+    </p>
+</form>
+</body>
+
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Thermostat</title>
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+
+<body>
+    <form class='form'>
+        <div class='field half'>
+            <label class='label title'>Temperature:</label>
+            <label class='label temperature' th:text="${temperature + ' °F' }"></label>
+        </div>
+
+        <div class='field half'>
+            <label class='label title'>Humidity:</label>
+            <label class='label humidity' th:text="${humidity + ' %' }"></label>
+        </div>
+
+        <div class='field'>
+            <label class='label title' th:text="${'Status: ' + mode}"></label>
+            <label class='label subtext'>Updated 1 minute ago.</label>
+        </div>
+
+    </form>
+
+    <div class='form'>
+            <label class='label title'>Settings</label>
+            <div class="accordion">Thermostat</div>
+            <div class="panel">
+                <form class='form' action="#" method="post" th:action="@{/dashboard}" th:object="${programSettings}">
+                    <div class='field half topLabelPadding'>
+                        <label class='label'>Max Temperature:</label>
+                        <input class='text-input' type='text' th:value="*{maxTemperature}" />
+                    </div>
+
+                    <div class='field half topLabelPadding'>
+                        <label class='label'>Min Temperature:</label>
+                        <input class='text-input' type='text' th:value="*{minTemperature}" />
+                    </div>
+
+                    <div class='field half'>
+                        <label class='label'>AC On/Off GPIO Pin:</label>
+                        <input class='text-input' type='text' th:value="*{gpioOnOff}" />
+                    </div>
+
+                    <div class='field half'>
+                        <label class='label'>Filter Reset GPIO Pin:</label>
+                        <input class='text-input' type='text' th:value="*{gpioFilterReset}" />
+                    </div>
+
+                    <div class='field half'>
+                        <label class='label'>DHT11 GPIO Pin:</label>
+                        <input class='text-input' type='text' th:value="*{gpioDHT11}" />
+                    </div>
+
+                    <div class='field half'>
+                        <input class='button fullwidth' type='submit' value='Save'>
+                    </div>
+                </form>
+            </div>
+
+            <button class="accordion">Email Notifications</button>
+            <div class="panel">
+                <form class='form' action="#" method="post" th:action="@{/settings}" th:object="${programSettings}">
+                    <div class='field half topLabelPadding'>
+                        <label class='label'>Recipients:</label>
+                        <input class='text-input' type='text' autocomplete="off" id='notificationReceipts' name='notificationReceipts' th:value="*{notificationReceipts}" required />
+                    </div>
+
+                    <div class='field half topLabelPadding'>
+                        <label class='label'>Sent From Email:</label>
+                        <input class='text-input' type='text' autocomplete="off" id='fromEmail' name='fromEmail' th:field="*{fromEmail}" required />
+                    </div>
+
+                    <div class='field half'>
+                        <label class='label'>SMTP Server:</label>
+                        <input class='text-input' type='text' autocomplete="off" id='smtpServer' name='smtpServer' th:field="*{smtpServer}" required />
+                    </div>
+
+                    <div class='field half'>
+                        <label class='label'>Port:</label>
+                        <input class='text-input' type='text' autocomplete="off" id='port' name='port' th:field="*{port}" required />
+                    </div>
+
+                    <div class='field half'>
+                        <label class='label'>Enable Auth:</label>
+                        <ul class='options'>
+                            <li class='option'>
+                                <input class='option-input' id='enable-auth' name='auth' type='radio' th:value="true" th:field="*{enableAuth}">
+                                <label class='option-label' for='enable-auth'>True</label>
+                            </li>
+                            <li class='option'>
+                                <input class='option-input' id='disable-auth' name='auth' type='radio' th:value="false" th:field="*{enableAuth}">
+                                <label class='option-label' for='disable-auth'>False</label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class='field half'>
+                        <label class='label'>Enable STARTLS:</label>
+                        <ul class='options'>
+                            <li class='option'>
+                                <input class='option-input' id='enable-startls' name='startls' type='radio' th:value="true" th:field="*{enableSTARTLS}">
+                                <label class='option-label' for='enable-startls'>True</label>
+                            </li>
+                            <li class='option'>
+                                <input class='option-input' id='disable-startls' name='startls' type='radio' th:value="false" th:field="*{enableSTARTLS}">
+                                <label class='option-label' for='disable-startls'>False</label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class='field'>
+                        <input class='button fullwidth' type='submit' value='Save'>
+                    </div>
+                </form>
+            </div>
+
+            <button class="accordion">Logs</button>
+            <div class="panel">
+                <textarea readonly rows="19" style="display: block; margin-left: auto; margin-right: auto; margin-top: 1em;" th:text="${logData.toString()}"></textarea>
+            </div>
+
+            <button class="accordion">Diagnostics</button>
+            <div class="panel form">
+
+                <div class='field half topLabelPadding'>
+                    <input class="topLabelPadding button fullwidth" type="button" onclick="window.location.href='./api/toggle-on-off';" value="Toggle On/Off" />
+                </div>
+
+                <div class='field half topLabelPadding'>
+                    <input class="button fullwidth" type="button"  onclick="window.location.href='./api/filter-reset';" value="Filter Reset" />
+                </div>
+
+                <div class='field half'>
+                    <input class="button fullwidth" style="width: 100%;" type="button" onclick="window.location.href='./api/view-screenshot';" value="View Screenshot" />
+                </div>
+            </div>
+
+            <p class='field' style="margin-top: 1em;">
+                <a class="button button-login" href="./logout">Logout</a>
+            </p>
+
+    </div>
+
+</body>
+
+<script src="./assets/accordion.js"></script>
+
+</html>

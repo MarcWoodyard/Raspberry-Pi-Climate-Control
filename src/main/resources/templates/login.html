@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Thermostat</title>
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+
+<body>
+    <form class='form' method="post" th:action="@{/login}">
+        <p class='field half'>
+            <label class='label' for='login'>Login</label>
+            <input class='text-input' type='text' id='login' name='username' required th:if="${param.error == null}">
+            <input class='text-input error' type='text' id='login' name='username' required th:if="${param.error != null}">
+        </p>
+        <p class='field half'>
+            <label class='label' for='password'>Password</label>
+            <input class='text-input' type='password' id='password' name='password' required th:if="${param.error == null}">
+            <input class='text-input error' type='password' id='password' name='password' required th:if="${param.error != null}">
+        </p>
+
+        <p class='field'>
+            <input class='button' type='submit' value='Send'>
+        </p>
+    </form>
+
+</html>
